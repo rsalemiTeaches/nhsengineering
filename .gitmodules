@@ -1,0 +1,21 @@
+[submodule "third_party/arduino-alvik-mpy"]
+	path = third_party/arduino-alvik-mpy
+	url = https://github.com/arduino/arduino-alvik-mpy.git
+[submodule "third_party/Qwiic_Buzzer_Py"]
+	path = third_party/Qwiic_Buzzer_Py
+	url = https://github.com/sparkfun/Qwiic_Buzzer_Py.git
+[submodule "third_party/Qwiic_I2C_Py"]
+	path = third_party/Qwiic_I2C_Py
+	url = https://github.com/sparkfun/Qwiic_I2C_Py.git
+[submodule "third_party/third_party/arduino-alvik-mpy"]
+	path = third_party/third_party/arduino-alvik-mpy
+	url = https://github.com/arduino/arduino-alvik-mpy.git
+[submodule "third_party/third_party/Qwiic_Buzzer_Py"]
+	path = third_party/third_party/Qwiic_Buzzer_Py
+	url = https://github.com/sparkfun/Qwiic_Buzzer_Py.git
+[submodule "third_party/quiic_huskylens_py"]
+	path = third_party/quiic_huskylens_py
+	url = https://github.com/rsalemiTeaches/qwiic_huskylens_py
+[submodule "coursework/intro2programming"]
+	path = coursework/intro2programming
+	url = https://github.com/rsalemiTeaches/intro2programming
