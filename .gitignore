@@ -416,3 +416,10 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Obsidian per-machine layout; the rest of .obsidian is shared settings.
+.obsidian/workspace.json
+
+# Built guides. The markdown is the source and the build reproduces them.
+guide_builder/*.docx
+guide_builder/*.pdf
