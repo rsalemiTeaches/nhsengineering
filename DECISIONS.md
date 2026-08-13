@@ -115,8 +115,11 @@ a thread about one would open by reading the state of another.
 
 13. **The student checkoff sheet is generated, not written.**
     `guides/unit01/tracker.js` holds the project list and writes *Completed
-    Electronics Projects.docx*; the docx is gitignored like the PDFs and is
-    never edited by hand, for the same reason no guide has an editable copy. The
+    Electronics Projects.pdf*; it is gitignored like the guides and never edited
+    by hand, for the same reason no guide has an editable copy. It was briefly
+    deployed as a `.docx` — the format it was imported in — which was wrong on
+    this repo's own rules: a Word file invites a hand-fix the next build throws
+    away, and a form is where reflow between Word versions hurts most. The
     old `tracker.md` is deleted — it was a second copy of the same grid.
 
     The builder does not make this one. The reason first given here was that
@@ -124,7 +127,7 @@ a thread about one would open by reading the state of another.
     and it was the wrong reason anyway. The real one is that the sheet is a
     form, not a guide: write-on lines, a name block, and checkbox glyphs sized
     by hand, none of which the guide grammar expresses. It borrows the builder's
-    `docx` package rather than keeping a second one.
+    `docx` package and its `topdf.js` rather than keeping a second copy of either.
 
     Students write the due date in themselves, and a ◇ beside it is the
     teacher's mark for late. The diamond is deliberately not a square, so it

@@ -30,8 +30,10 @@ anyone can edit.
 
 The student checkoff sheet is generated, not written:
 `guides/unit01/tracker.js` holds the project list and `node tracker.js` writes
-*Completed Electronics Projects.docx*. Edit the list, rerun, never edit the
-docx. The builder does not make it: the sheet is a form, not a guide.
+*Completed Electronics Projects.pdf*. Edit the list, rerun, never edit the
+output. The builder does not make it — the sheet is a form, not a guide — but it
+borrows the builder's `topdf.js`, so Word is no more in this chain than in a
+guide's. `extras.txt` gets it rebuilt and deployed with the guides.
 
 ## Building
 

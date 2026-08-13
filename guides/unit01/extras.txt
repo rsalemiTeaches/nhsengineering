@@ -6,4 +6,4 @@
 # alongside the PDFs on a run with -d. Drop the :: half for a file that is not
 # generated and only needs deploying.
 
-Completed Electronics Projects.docx :: node tracker.js
+Completed Electronics Projects.pdf :: node tracker.js

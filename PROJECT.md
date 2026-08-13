@@ -45,9 +45,10 @@ PDF. None has been taught from in this form.**
 | E09 | The Simon Game | 4 |
 
 `guides/unit01/tracker.js` generates the student checkoff sheet — a grid of Sim
-and Real boxes for all ten, written as *Completed Electronics Projects.docx*.
-The script is the source; the docx is output and is gitignored like the PDFs.
-The builder does not make it: the sheet is a table and the parser has none.
+and Real boxes for all ten, written as *Completed Electronics Projects.pdf*.
+The script is the source; the PDF is output and is gitignored like the guides.
+The builder does not make it — the sheet is a form, not a guide — but it uses the
+builder's `topdf.js`, so Word is no more in this chain than in a guide's.
 
 ## What's done
 
@@ -69,6 +70,9 @@ The builder does not make it: the sheet is a table and the parser has none.
   [DECISIONS #13](DECISIONS.md).
 - **The builder renders tables.** The parts tables in E01, E02 and E03 had been
   printing as raw markdown since the import. [DECISIONS #14](DECISIONS.md).
+- **`nhsrobotics` is on the same shared builder**, pinned to the same commit, and
+  its nine guides build from it. Its course text moved to `guides/course.js` the
+  same way Engineering's did.
 - **The repo is an Obsidian vault.** Wikilinks on, `third_party/` excluded,
   `.obsidian/workspace.json` gitignored. Built guides are not committed.
 
@@ -81,10 +85,6 @@ longer part of this gap — see #12.
 
 **E00 still teaches Blink twice.** Its Exercise 2 has students modify Blink,
 which is what E03 is for. Ten pages against two to six for everything else.
-
-**`nhsrobotics` is not on the shared builder yet.** It still has its own copy,
-which now lacks the heading fix, the content-folder change and the preflight.
-[DECISIONS #11](DECISIONS.md).
 
 **Nothing here has been taught from.** No student has held one of these PDFs.
 

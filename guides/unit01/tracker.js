@@ -1,15 +1,16 @@
 // The student checkoff sheet for Unit 01 — one page, a Sim box and a Real box
 // per project. V01
 //
-//   node tracker.js                      -> Completed Electronics Projects.docx
-//   node tracker.js "Some Other Name.docx"
+//   node tracker.js                      -> Completed Electronics Projects.pdf
+//   node tracker.js "Some Other Name.pdf"
 //
-// This script is the source. The .docx is output and is not edited by hand,
-// for the same reason no guide has an editable copy: an edit that is not here
-// cannot survive the next run. Change the list below and run it again.
+// This script is the source. The PDF is output and there is no editable copy of
+// the sheet anywhere, for the same reason no guide has one: an edit that is not
+// here cannot survive the next run. Change the list below and run it again.
 //
-// It is not built by ../../builder — that makes guides, and its parser has no
-// tables, which this is entirely made of. It borrows the builder's copy of the
+// It is not built by ../../builder — that makes guides, and this is a form:
+// write-on lines, a name block, and checkbox glyphs sized by hand. It borrows
+// the builder's topdf.js to reach a PDF, and the builder's copy of the
 // `docx` package rather than keeping a second one, which is why the require
 // below has a fallback: node looks for node_modules upwards from this file and
 // the builder is sideways from here, not above it.
@@ -38,7 +39,7 @@ try {
 const {Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
        WidthType, AlignmentType, BorderStyle, ShadingType, VerticalAlign} = d;
 
-const OUT = process.argv[2] || "Completed Electronics Projects.docx";
+const OUT = process.argv[2] || "Completed Electronics Projects.pdf";
 
 const PAGE_W = 12240, PAGE_H = 15840, MARGIN = 1080;
 const TABLE_W = PAGE_W - 2 * MARGIN;              // 10080 dxa
@@ -197,7 +198,8 @@ const doc = new Document({
   }],
 });
 
-Packer.toBuffer(doc).then(b => {
-  fs.writeFileSync(OUT, b);
-  console.log("wrote", OUT);
-});
+// A PDF, not a Word file. The .docx is an intermediate in a temp folder and is
+// deleted -- nothing an editor can open is left behind, so a typo fixed by hand
+// cannot survive the next build. Same rule as the guides.
+const {writePdf} = require(path.resolve(__dirname, '../../builder/topdf.js'));
+writePdf(doc, OUT, Packer);
