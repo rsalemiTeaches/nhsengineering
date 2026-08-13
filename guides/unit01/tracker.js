@@ -42,7 +42,10 @@ const OUT = process.argv[2] || "Completed Electronics Projects.docx";
 
 const PAGE_W = 12240, PAGE_H = 15840, MARGIN = 1080;
 const TABLE_W = PAGE_W - 2 * MARGIN;              // 10080 dxa
-const COL = [1000, 4600, 2240, 2240];             // Project | What you do | Sim | Real
+// Project | What you do | Due | Sim | Real. The Due cell carries the late
+// diamond as well, rather than a sixth column: the mark is a judgement about
+// the date, so it belongs beside it, and the description keeps its width.
+const COL = [1080, 3640, 1720, 1820, 1820];
 
 const projects = [
   ["00", "Set Up the Arduino IDE", "Get the Arduino IDE running and make the built-in LED blink.", "ide"],
@@ -87,6 +90,26 @@ const box = () => new Paragraph({
   children: [new TextRun({text: "☐", size: 40})],
 });
 
+// The due date the student writes in, with the late diamond under it. The
+// diamond is deliberately NOT a square: a square here would read as one more
+// thing to complete, and this one is the teacher's mark, not the student's.
+const dueCell = () => cell([
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {before: 60, after: 40},
+    border: {bottom: {style: BorderStyle.SINGLE, size: 6, color: "000000"}},
+    children: [new TextRun({text: "", size: 21})],
+  }),
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {before: 0, after: 20},
+    children: [
+      new TextRun({text: "◇", size: 26}),
+      new TextRun({text: "  late", size: 16, italics: true, color: "595959"}),
+    ],
+  }),
+], COL[2]);
+
 const rows = [];
 
 rows.push(new TableRow({
@@ -94,8 +117,9 @@ rows.push(new TableRow({
   children: [
     cell([t("Project", {bold: true, align: AlignmentType.CENTER})], COL[0], {shade: "D9D9D9"}),
     cell([t("What you do", {bold: true})], COL[1], {shade: "D9D9D9"}),
-    cell([t("Sim", {bold: true, align: AlignmentType.CENTER})], COL[2], {shade: "D9D9D9"}),
-    cell([t("Real", {bold: true, align: AlignmentType.CENTER})], COL[3], {shade: "D9D9D9"}),
+    cell([t("Due", {bold: true, align: AlignmentType.CENTER})], COL[2], {shade: "D9D9D9"}),
+    cell([t("Sim", {bold: true, align: AlignmentType.CENTER})], COL[3], {shade: "D9D9D9"}),
+    cell([t("Real", {bold: true, align: AlignmentType.CENTER})], COL[4], {shade: "D9D9D9"}),
   ],
 }));
 
@@ -103,15 +127,16 @@ for (const [num, title, what, kind] of projects) {
   const children = [
     cell([t(num, {bold: true, size: 26, align: AlignmentType.CENTER})], COL[0]),
     cell([t(title, {bold: true}), t(what, {size: 19, color: "404040"})], COL[1]),
+    dueCell(),
   ];
   if (kind === "ide") {
     children.push(cell([
       t("IDE works", {italics: true, align: AlignmentType.CENTER, size: 19, color: "404040"}),
       box(),
-    ], COL[2] + COL[3], {span: 2}));
+    ], COL[3] + COL[4], {span: 2}));
   } else {
-    children.push(cell([box()], COL[2]));
     children.push(cell([box()], COL[3]));
+    children.push(cell([box()], COL[4]));
   }
   rows.push(new TableRow({children}));
 }
@@ -139,8 +164,9 @@ const doc = new Document({
         spacing: {after: 240},
         border: {bottom: {style: BorderStyle.SINGLE, size: 6, color: "000000"}},
         children: [new TextRun({
-          text: "Every project has two halves. Get it working in the Tinkercad simulator first, " +
-                "then build the same circuit for real on your bench. Show each one to get it checked off.",
+          text: "Write the due date for each project in the Due column. Every project has two halves: " +
+                "get it working in the Tinkercad simulator first, then build the same circuit for real " +
+                "on your bench. Show each one to get it checked off.",
           size: 21, color: "404040"})],
       }),
       new Table({
@@ -163,7 +189,8 @@ const doc = new Document({
       new Paragraph({
         spacing: {before: 240},
         children: [new TextRun({
-          text: "Sim = working in Tinkercad.   Real = working on the bench, in front of your teacher.",
+          text: "Sim = working in Tinkercad.   Real = working on the bench, in front of your teacher.   " +
+                "◇ is marked by your teacher if the project came in after its due date.",
           size: 19, italics: true, color: "595959"})],
       }),
     ],
