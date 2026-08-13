@@ -421,5 +421,14 @@ FodyWeavers.xsd
 .obsidian/workspace.json
 
 # Built guides. The markdown is the source and the build reproduces them.
-guide_builder/*.docx
-guide_builder/*.pdf
+guides/**/*.docx
+guides/**/*.pdf
+
+# Screenshot drops. Pictures belong in guides/<unit>/images/ with a guide name;
+# a CleanShot left at the repo root is one that has not been filed yet.
+/CleanShot*.png
+
+# The builder on its way out of this repo. Everything here belongs to
+# rsalemiTeaches/guide-builder and is pushed there by ./setup-builder.sh, which
+# deletes this folder when it is done. Nothing in it is ever committed here.
+/_builder_staging/

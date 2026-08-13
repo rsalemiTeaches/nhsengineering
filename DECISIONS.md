@@ -46,3 +46,27 @@ a thread about one would open by reading the state of another.
    your own design — but no rule says what a flex is or what it scores. Until
    this is settled, `{{GRADING}}` in `guide_builder/build.js` is a marked TODO
    and no guide uses it. — 2026-08-12
+
+7. **The builder rules came across with the copy, and they are not
+   engineering's to re-decide.** Links print as their label, a bare link to
+   another guide is refused, pictures are capped at 6.5 × 4.5 inches and do not
+   chain across a page break, and `build-all.sh` only rebuilds what is stale.
+   These are `nhsrobotics` DECISIONS #38, #39 and #40; the reasoning lives
+   there, and [REFERENCE.md](REFERENCE.md) records what they mean in practice.
+   Two of them — the picture caps and the chaining — were found *here*, in the
+   imported guides, and fixed in both builders. — 2026-08-12
+
+8. **Built guides are not committed, and neither is the import zip.** The
+   markdown and the pictures in `guide_builder/images/` are the source; the PDFs
+   are reproducible from them. Deployed copies live in
+   `Class Development/Engineering/Projects/Unit 01—Electronics`. — 2026-08-12
+
+9. **This repo is the Obsidian vault, with `third_party/` excluded.** Same
+   arrangement as `nhsrobotics`: vault root is the repo, so there is no second
+   copy of anything, and `.obsidian/workspace.json` is gitignored because it is
+   per-machine layout. — 2026-08-12
+
+10. **Engineering threads read these three files, not Robotics'.** `PROJECT.md`,
+    `DECISIONS.md` and `REFERENCE.md` now exist here. Both repos have a
+    `PROJECT.md`, and `start-thread` orients on whichever it finds, so an
+    Engineering thread should mount this folder alone. — 2026-08-12
