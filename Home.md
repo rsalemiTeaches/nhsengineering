@@ -17,7 +17,7 @@ anyone can edit.
 
 | Guide | Title | Pages |
 |---|---|---|
-| [e00](guides/unit01/e00.md) | Set Up the Arduino IDE | 8 |
+| [e00](guides/unit01/e00.md) | Set Up the Arduino IDE | 10 |
 | [e01](guides/unit01/e01.md) | LED Circuit | 4 |
 | [e02](guides/unit01/e02.md) | LED Circuit with Switch | 6 |
 | [e03](guides/unit01/e03.md) | Arduino Blink | 4 |
@@ -26,13 +26,12 @@ anyone can edit.
 | [e06](guides/unit01/e06.md) | Light LEDs with a Rheostat | 2 |
 | [e07](guides/unit01/e07.md) | Synthesizer | 4 |
 | [e08](guides/unit01/e08.md) | LCD Hello World | 2 |
-| [e09](guides/unit01/e09.md) | The Simon Game | 2 |
+| [e09](guides/unit01/e09.md) | The Simon Game | 4 |
 
 The student checkoff sheet is generated, not written:
 `guides/unit01/tracker.js` holds the project list and `node tracker.js` writes
 *Completed Electronics Projects.docx*. Edit the list, rerun, never edit the
-docx. It is not a guide and the builder does not make it — its parser has no
-tables.
+docx. The builder does not make it: the sheet is a form, not a guide.
 
 ## Building
 

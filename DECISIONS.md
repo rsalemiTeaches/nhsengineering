@@ -37,15 +37,21 @@ a thread about one would open by reading the state of another.
    is needed to make a guide or to print one. Guides deploy to
    `Class Development/Engineering/Projects/Unit 01—Electronics`. — 2026-08-12
 
-5. **The builder is a separate copy of the robotics one, not a shared library.**
-   Same code today, and it may drift. Engineering is its own course and its
-   guides answer to nothing in Robotics. — 2026-08-12
+5. ~~**The builder is a separate copy of the robotics one, not a shared
+   library.** Same code today, and it may drift. Engineering is its own course
+   and its guides answer to nothing in Robotics.~~ — 2026-08-12
 
-6. **What a flex is worth in electronics is NOT decided.** Two guides already
+   **Reversed by #11.** The freedom to drift was never used. What happened
+   instead was three bugs found in Engineering that all had to be carried to
+   Robotics by hand. — 2026-08-13
+
+6. ~~**What a flex is worth in electronics is NOT decided.** Two guides already
    gesture at one — E00 asks for Morse code S-O-S, E04 asks for a light show of
    your own design — but no rule says what a flex is or what it scores. Until
    this is settled, `{{GRADING}}` in `guide_builder/build.js` is a marked TODO
-   and no guide uses it. — 2026-08-12
+   and no guide uses it.~~ — 2026-08-12
+
+   **Settled by #12: electronics has no flex at all.** — 2026-08-13
 
 7. **The builder rules came across with the copy, and they are not
    engineering's to re-decide.** Links print as their label, a bare link to
@@ -70,3 +76,81 @@ a thread about one would open by reading the state of another.
     `DECISIONS.md` and `REFERENCE.md` now exist here. Both repos have a
     `PROJECT.md`, and `start-thread` orients on whichever it finds, so an
     Engineering thread should mount this folder alone. — 2026-08-12
+
+11. **The builder is one shared repository, `rsalemiTeaches/guide-builder`, a
+    submodule of both courses.** This reverses #5, which kept a separate copy so
+    the two were free to drift. They never did. Of 586 lines, everything but two
+    string constants is course-neutral, and three defects found while working on
+    Engineering — the picture size caps, pictures chaining across a page break,
+    and a picture keeping with the heading below it — each had to be carried to
+    Robotics by hand. #7 had already conceded the substance of this by ruling
+    that the builder's rules were not Engineering's to re-decide: that is a
+    shared library with no mechanism, which is the worst arrangement available.
+
+    Each course pins its own commit, so a change arrives when its pin moves and
+    not before. **Bumping a pin means rebuilding and eyeballing the guides in
+    both courses** — pagination is the shared failure mode, and it fails
+    quietly.
+
+    The layout changed with it. `guide_builder/` is gone: guides, `images/` and
+    the checkoff sheet are in `guides/unit01/`, the builder is in `builder/`,
+    and the build runs from the guides' folder because the builder no longer
+    assumes it sits beside them. Anything in an earlier entry that says
+    `guide_builder/` means `guides/unit01/`. — 2026-08-13
+
+12. **Electronics has no flex. A lab is 20 points on time and 18 late, a redo
+    comes back until it is right and then scores 18, and the only zero is a lab
+    never finished.** This settles #6. Going further is Robotics' idea, where a
+    flex scores 20 against 19 for all the work; Electronics comes first and its
+    job is getting a circuit to work at all.
+
+    Three guides used to offer a flex for an A+ — E00's Morse code, E04's light
+    show, E06's LED layout. Each now simply requires the thing, because a reward
+    the gradebook does not pay is one a student notices. The Morse code exercise
+    was kept rather than deleted: it is the only place in E00 that asks a
+    student to work something out.
+
+    Every guide prints this rule from `{{GRADING}}` in `builder/build.js`, so
+    there is one copy of it and it cannot drift between guides. — 2026-08-13
+
+13. **The student checkoff sheet is generated, not written.**
+    `guides/unit01/tracker.js` holds the project list and writes *Completed
+    Electronics Projects.docx*; the docx is gitignored like the PDFs and is
+    never edited by hand, for the same reason no guide has an editable copy. The
+    old `tracker.md` is deleted — it was a second copy of the same grid.
+
+    The builder does not make this one. The reason first given here was that
+    `parse.js` had no tables; that stopped being true the same day — see #14 —
+    and it was the wrong reason anyway. The real one is that the sheet is a
+    form, not a guide: write-on lines, a name block, and checkbox glyphs sized
+    by hand, none of which the guide grammar expresses. It borrows the builder's
+    `docx` package rather than keeping a second one.
+
+    Students write the due date in themselves, and a ◇ beside it is the
+    teacher's mark for late. The diamond is deliberately not a square, so it
+    cannot be misread as one more box to complete. — 2026-08-13
+
+14. **The builder renders markdown tables, and a table's first row is its
+    header.** The parts tables in E01, E02 and E03 had been printing as raw
+    markdown since the import — `| Arduino UNO | ![[e01_05.png]] |` and a row of
+    dashes, on the page, for a student to read. `parse.js` had no table rule at
+    all, so a `|` line fell through to an ordinary paragraph. Nobody had seen it
+    because nothing has been taught from yet.
+
+    Three things this settles:
+
+    - **The first row is the header**, shaded and bold, as markdown says. The
+      importer cannot know that and leaves a parts table with its first *data*
+      row above the separator, so the three tables were given real
+      `| Part | What it looks like |` headers by hand.
+    - **A cell holding only a picture becomes that picture**, capped at 1.56
+      inches tall. Width alone was tried first and gave three-inch rows that
+      pushed E02 from six sheets to eight. A parts list wants a thumbnail to
+      match against a bin, not a portrait.
+    - **An empty cell stays empty**, which #3 depends on: the resistor row keeps
+      its name and an empty cell so a correct 1 kΩ picture can drop in later.
+
+    This is the first change made to the builder since it became shared, so it
+    is also the first test of #11's rule: `nhsrobotics` gets it when its pin
+    moves, and moving that pin means rebuilding and looking at its guides.
+    — 2026-08-13
