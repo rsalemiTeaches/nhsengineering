@@ -33,7 +33,7 @@ PDF. None has been taught from in this form.**
 
 | # | Guide | Pages |
 |---|---|---|
-| E00 | Set Up the Arduino IDE | 10 |
+| E00 | Set Up the Arduino IDE | 8 |
 | E01 | LED Circuit | 4 |
 | E02 | LED Circuit with Switch | 6 |
 | E03 | Arduino Blink | 4 |
@@ -64,7 +64,9 @@ builder's `topdf.js`, so Word is no more in this chain than in a guide's.
 - **Every resistor is 1 kΩ** in E01, E02, E03 and E09, and the resistor row in a
   parts table has no picture. [DECISIONS #1, #2, #3](DECISIONS.md).
 - **E00 was rewritten for the desktop Arduino IDE**, replacing the Arduino Cloud
-  walkthrough, with ten new screenshots.
+  walkthrough, with ten new screenshots. Its Exercise 2 is now **one** assignment
+  — blink S-O-S in Morse code — instead of a timing exercise that duplicated E03.
+  E03 says up front that it carries no new code and the job is the wiring.
 - **The checkoff sheet is generated** by `guides/unit01/tracker.js`, with a
   hand-written due date and a ◇ the teacher marks for late.
   [DECISIONS #13](DECISIONS.md).
@@ -83,8 +85,10 @@ nothing else. The house voice and the heading structure are unwritten. Compare
 any guide here against `nhsrobotics`' P01 or P02 to see the gap. Grading is no
 longer part of this gap — see #12.
 
-**E00 still teaches Blink twice.** Its Exercise 2 has students modify Blink,
-which is what E03 is for. Ten pages against two to six for everything else.
+**A PDF must be built on Ray's Mac.** The worksheet's 🤖 renders there and comes
+out as a placeholder box when built anywhere without an emoji font — the sandbox,
+for one. The font is chosen when the PDF is made, not when it is opened, so the
+build machine decides what a student sees.
 
 **Nothing here has been taught from.** No student has held one of these PDFs.
 
@@ -103,6 +107,9 @@ which is what E03 is for. Ten pages against two to six for everything else.
   No office suite is needed to make a guide or print one.
 - **A separate `Engineering/Project Guides/` folder.** Made, then removed; the
   PDFs sit beside the unit in `Projects/Unit 01—Electronics/`.
+- **A sixth column for the late mark** on the checkoff sheet. The ◇ sits in the
+  Due cell instead, next to the date it judges, so the description keeps its
+  width. [DECISIONS #13](DECISIONS.md).
 - **Correcting the 220Ω resistor photographs.** Deliberate — Tinkercad draws
   three colour bands and the real parts have four, so no one picture works for
   both. [DECISIONS #2](DECISIONS.md).

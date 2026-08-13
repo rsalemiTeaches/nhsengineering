@@ -110,8 +110,10 @@ a thread about one would open by reading the state of another.
     was kept rather than deleted: it is the only place in E00 that asks a
     student to work something out.
 
-    Every guide prints this rule from `{{GRADING}}` in `builder/build.js`, so
-    there is one copy of it and it cannot drift between guides. — 2026-08-13
+    Every guide prints this rule from `{{GRADING}}`, so there is one copy of it
+    and it cannot drift between guides. That text started in `builder/build.js`
+    and moved to `guides/unit01/course.js` when the builder became shared — see
+    #16. — 2026-08-13
 
 13. **The student checkoff sheet is generated, not written.**
     `guides/unit01/tracker.js` holds the project list and writes *Completed
@@ -157,3 +159,48 @@ a thread about one would open by reading the state of another.
     is also the first test of #11's rule: `nhsrobotics` gets it when its pin
     moves, and moving that pin means rebuilding and looking at its guides.
     — 2026-08-13
+
+15. **The checkoff sheet and the worksheet are PDFs, not Word files.** Both were
+    briefly deployed as `.docx` — the format the worksheet had always been in,
+    and the format Engineering's sheet was first written to. That was wrong on
+    this repo's own rules. A Word file invites a hand-fix that the next build
+    throws away, and a form is exactly where reflow between Word versions hurts:
+    ruled lines and box widths move. Both now reach PDF through the builder's
+    `topdf.js`, which packs to a `.docx` in a temp folder, converts it, and
+    deletes it — the same temp-and-discard chain a guide uses, so no editable
+    copy exists anywhere.
+
+    The superseded `.docx` files were removed from
+    `Class Development/Engineering/Projects/Unit 01—Electronics` and
+    `Class Development/Robotics/Project Guides`.
+
+    **A consequence worth knowing: the machine that builds a PDF decides its
+    fonts.** The worksheet's 🤖 renders on Ray's Mac and comes out a placeholder
+    box built anywhere without an emoji font. This was invisible while the
+    deliverable was a `.docx`, because the font was chosen when the file was
+    opened. Affects both repos. — 2026-08-13
+
+16. **The course's own text, deploy target and guide naming live with the
+    guides, not in the builder.** #11 made the builder shared but left
+    Engineering's `SIMREAL` and `GRADING` as constants inside `build.js`, its
+    Drive path hardcoded in `build-all.sh`, and its `e*.md` glob assumed. None of
+    that survived contact with Robotics, whose guides are `pNN.md` and whose
+    placeholders are `SAVE`, `PARTA` and `GRADING` — one of them built from the
+    guide's own project number.
+
+    So three things moved out of the builder and into `guides/unit01/`:
+
+    - **`course.js`** exports a function of the guide's frontmatter returning
+      what each `{{PLACEHOLDER}}` says. Taking the frontmatter is what lets
+      Robotics build `/workspace/p02.py` from the guide's `number` and
+      `scaffold` without the builder knowing either field exists. A guides folder
+      with no `course.js` is refused rather than guessed at, and a test covers
+      that.
+    - **`deploy.txt`** names the deploy folder relative to `Class Development`.
+    - **A guide is a letter and two digits.** Never `*.md`, which would sweep up
+      a README.
+
+    This is the seam that makes one builder honest for two courses: the text a
+    student reads about grading is the one thing that genuinely differs, and it
+    is now the only thing. Affects both repos — `nhsrobotics` DECISIONS #43 is
+    the same call from that side. — 2026-08-13
