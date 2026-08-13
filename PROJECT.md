@@ -80,10 +80,25 @@ builder's `topdf.js`, so Word is no more in this chain than in a guide's.
 
 ## What's open
 
-**The import is still raw.** It carried the words and the pictures across and
-nothing else. The house voice and the heading structure are unwritten. Compare
-any guide here against `nhsrobotics`' P01 or P02 to see the gap. Grading is no
-longer part of this gap — see #12.
+**The import is still raw, and this is the largest thing left.** It carried the
+words and the pictures across and nothing else. Two concrete gaps:
+
+- **No shared skeleton.** Robotics P02 has a shape every guide repeats: *Part 1:
+  How it works*, then *Part 2: Do the work* as *Step 1: Set up*, *Step 2: Type in
+  WORK 1*, WORK 2, WORK 3, *Step 5: Worksheet and check off*, *FLEX: The A+*. A
+  student who has done P01 knows where they are in P05. Engineering has no shape
+  at all: E02 runs *Switch on a breadboard* → *Simulate the Circuit* → *Build the
+  circuit* → *Real-life circuit*, two of which mean the same thing and one of
+  which is orphaned; E07 is *A synthesizer example* → *Create a synthesizer* with
+  *The hardware* / *The software* under each; E00 uses *Exercise 1* / *Exercise
+  2*. Four guides, four skeletons, each inherited from whatever its Google Doc
+  happened to do. The work is to pick one and rewrite all ten into it.
+- **Diagram labels fused into the prose.** Floating callouts on a picture had
+  nowhere to go, so the importer dropped them mid-sentence: E06's "Turn this
+  knobTo light up these LEDs", E07's "Pin 2 driving the speakerSpeaker connected
+  to GND", E02's "Switch controlling an LEDgndArduino". Every guide has some.
+
+Grading is no longer part of this gap — see #12.
 
 **A PDF must be built on Ray's Mac.** The worksheet's 🤖 renders there and comes
 out as a placeholder box when built anywhere without an emoji font — the sandbox,
