@@ -44,8 +44,10 @@ PDF. None has been taught from in this form.**
 | E08 | LCD Hello World | 2 |
 | E09 | The Simon Game | 2 |
 
-`guides/unit01/tracker.md` is the student checkoff sheet — a grid of Sim and
-Real boxes for all ten. It is not a guide and is not built.
+`guides/unit01/tracker.js` generates the student checkoff sheet — a grid of Sim
+and Real boxes for all ten, written as *Completed Electronics Projects.docx*.
+The script is the source; the docx is output and is gitignored like the PDFs.
+The builder does not make it: the sheet is a table and the parser has none.
 
 ## What's done
 

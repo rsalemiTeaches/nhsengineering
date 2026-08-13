@@ -28,8 +28,11 @@ anyone can edit.
 | [e08](guides/unit01/e08.md) | LCD Hello World | 2 |
 | [e09](guides/unit01/e09.md) | The Simon Game | 2 |
 
-[tracker](guides/unit01/tracker.md) is the student checkoff grid — a Sim box and
-a Real box per lab. It is not a guide and is not built.
+The student checkoff sheet is generated, not written:
+`guides/unit01/tracker.js` holds the project list and `node tracker.js` writes
+*Completed Electronics Projects.docx*. Edit the list, rerun, never edit the
+docx. It is not a guide and the builder does not make it — its parser has no
+tables.
 
 ## Building
 
