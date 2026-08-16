@@ -42,11 +42,11 @@ guides and no pictures. Run it **from the folder the guides are in**.
 
 ```bash
 cd guides/unit01
-../../builder/build-all.sh          # build every guide that needs it
-../../builder/build-all.sh e05.md   # build one
-../../builder/build-all.sh -d       # build and copy into Unit 01—Electronics
-../../builder/build-all.sh -f       # rebuild everything, current or not
-node ../../builder/test-build.js    # check the builder
+../../shared/build-all.sh          # build every guide that needs it
+../../shared/build-all.sh e05.md   # build one
+../../shared/build-all.sh -d       # build and copy into Unit 01—Electronics
+../../shared/build-all.sh -f       # rebuild everything, current or not
+node ../../shared/test-build.js    # check the builder
 ```
 
 [builder/README.md](builder/README.md) explains the markdown the builder

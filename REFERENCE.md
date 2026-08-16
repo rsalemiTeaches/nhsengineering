@@ -21,10 +21,10 @@ builder takes the guide's own folder as the place to find everything.
 
 ```bash
 cd guides/unit01
-../../builder/build-all.sh e02.md -d   # build one guide and deploy it
-../../builder/build-all.sh -d          # build everything that needs it, deploy
-../../builder/build-all.sh -f          # rebuild everything, current or not
-node ../../builder/test-build.js       # check the builder, no robot and no Word
+../../shared/build-all.sh e02.md -d   # build one guide and deploy it
+../../shared/build-all.sh -d          # build everything that needs it, deploy
+../../shared/build-all.sh -f          # rebuild everything, current or not
+node ../../shared/test-build.js       # check the builder, no robot and no Word
 ```
 
 **A guide is only rebuilt when it is stale**, the way make works: its markdown,

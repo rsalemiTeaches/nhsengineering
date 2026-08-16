@@ -8,7 +8,7 @@
 // the sheet anywhere, for the same reason no guide has one: an edit that is not
 // here cannot survive the next run. Change the list below and run it again.
 //
-// It is not built by ../../builder — that makes guides, and this is a form:
+// It is not built by ../../shared — that makes guides, and this is a form:
 // write-on lines, a name block, and checkbox glyphs sized by hand. It borrows
 // the builder's topdf.js to reach a PDF, and the builder's copy of the
 // `docx` package rather than keeping a second one, which is why the require
@@ -26,12 +26,12 @@ let d;
 try {
   d = require('docx');
 } catch (e) {
-  const shared = path.resolve(__dirname, '../../builder/node_modules/docx');
+  const shared = path.resolve(__dirname, '../../shared/node_modules/docx');
   try {
     d = require(shared);
   } catch (e2) {
     console.error("cannot find the 'docx' package.");
-    console.error("it comes with the builder:  ( cd ../../builder && npm install )");
+    console.error("it comes with the builder:  ( cd ../../shared && npm install )");
     process.exit(1);
   }
 }
@@ -201,5 +201,5 @@ const doc = new Document({
 // A PDF, not a Word file. The .docx is an intermediate in a temp folder and is
 // deleted -- nothing an editor can open is left behind, so a typo fixed by hand
 // cannot survive the next build. Same rule as the guides.
-const {writePdf} = require(path.resolve(__dirname, '../../builder/topdf.js'));
+const {writePdf} = require(path.resolve(__dirname, '../../shared/topdf.js'));
 writePdf(doc, OUT, Packer);
