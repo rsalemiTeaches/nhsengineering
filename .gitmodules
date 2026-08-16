@@ -21,4 +21,4 @@
 	url = https://github.com/rsalemiTeaches/intro2programming
 [submodule "builder"]
 	path = builder
-	url = https://github.com/rsalemiTeaches/guide-builder.git
+	url = https://github.com/natickeng/vault-builder.git
