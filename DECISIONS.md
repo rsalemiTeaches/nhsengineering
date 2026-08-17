@@ -204,3 +204,24 @@ a thread about one would open by reading the state of another.
     student reads about grading is the one thing that genuinely differs, and it
     is now the only thing. Affects both repos — `nhsrobotics` DECISIONS #43 is
     the same call from that side. — 2026-08-13
+
+17. **The guide content is classroom-tested; only the new PDF pipeline is
+    not.** Ray has taught this class from these exact guides before, in their
+    original Google Doc form, and they work. "Nothing here has been taught
+    from" in STATUS.md refers narrowly to the PDFs produced by the new
+    markdown-to-PDF pipeline — no student has held one of those yet — not to
+    the guides' pedagogical content or per-guide structure. The lack of a
+    shared skeleton (see What's open) is a maintenance and consistency gap, not
+    evidence that any individual guide's structure has failed in a classroom.
+    — 2026-08-17
+
+18. ~~**The ten guides get one shared 6-part skeleton: finished project, new
+    concept, parts, software spec, simulation, real circuit.** This settles
+    the "no shared skeleton" gap in What's open.~~ — 2026-08-17
+
+    **Withdrawn — this was logged as a decision too early.** Ray was sketching
+    a list of section headers to critique, not settling a policy. No guide has
+    been rewritten to this shape, and it never got confirmed as the standard.
+    The actual approach: walk every guide E00–E09 guide-by-guide first, the way
+    E01 already was, and only suggest a standard afterward if the walkthrough
+    shows one is worth having. — 2026-08-17

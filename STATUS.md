@@ -105,7 +105,9 @@ out as a placeholder box when built anywhere without an emoji font — the sandb
 for one. The font is chosen when the PDF is made, not when it is opened, so the
 build machine decides what a student sees.
 
-**Nothing here has been taught from.** No student has held one of these PDFs.
+**No student has held one of the new PDFs yet.** That's about the pipeline, not
+the content: Ray has taught this class from these exact guides before, in their
+original Google Doc form, and they work. See [DECISIONS #17](DECISIONS.md).
 
 ## Paths not taken
 
