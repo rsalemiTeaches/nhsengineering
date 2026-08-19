@@ -225,3 +225,145 @@ a thread about one would open by reading the state of another.
     The actual approach: walk every guide E00–E09 guide-by-guide first, the way
     E01 already was, and only suggest a standard afterward if the walkthrough
     shows one is worth having. — 2026-08-17
+
+19. **Unit 02 is a class on coding with AI — writing specs and testing what
+    the AI produces — not software program management.** The Drive folder
+    `Class Development/Unit 02—Software Engineering/` has leftover content
+    from a different class Ray ran before: a `Software Change Request`
+    bug-tracking form (coder name, bug title, description, severity, status)
+    and a `Game Assignments.pdf` roster (14 students across Pong, Breakout,
+    Snake, Space Invaders, Frogger). The change-request form does not carry
+    over to this redesign — favor artifacts that serve the spec → generate →
+    test → fix loop directly (the PRD itself, its revisions) over
+    process/ticketing artifacts. The game roster may still be reused for
+    assignment. Affects `nhsengineering` only. — 2026-08-19
+
+20. **Unit 02 has no screenshots and no vision model.** A vision-capable
+    Ollama model (`qwen2.5vl`) was considered so students could paste a
+    screenshot alongside a fix request, but that would make the vision
+    model — not the coder model — the one writing the fix, trading code
+    quality for a capability this simple coursework doesn't need. Testing
+    evidence is a written description of what's wrong, by hand; one coder
+    model does all code generation, every step. Affects `nhsengineering`
+    only. — 2026-08-19
+
+21. **Unit 02 guides are printed. Students work from paper, not a screen.**
+    Guides must read correctly as a handout: no reliance on clicking a link,
+    no expectation a student can copy a command straight off the page.
+    Affects `nhsengineering` only. — 2026-08-19
+
+22. **Projects 01 and 02 are hand-typed, with no AI involved, deliberately.**
+    Project 01 sets up the term's tools (terminal, one git repo at `swdev/`
+    for every project this term, `uv`, `pico`). Project 02 hand-types a
+    pygame square that bounces off all four walls, paced with
+    `clock.tick(60)` — rehearsing, by hand, the exact "box bounces around
+    the screen" shape every one of the five assigned games needs as its
+    MVP, before an AI ever writes it. Having built it once, students should
+    write a tighter PRD requirement and judge the AI's version more
+    precisely later. Guides are `p01.md`/`p02.md` in `guides/unit02/` —
+    Unit 02 uses the `p` prefix (matching "Project NN"), not `e`, which
+    Unit 01 owns — each with its own `course.js` and `deploy.txt`. Unit 02
+    deploys to `Class Development/Unit 02—Software Engineering/`, at that
+    folder's root, unlike Unit 01's nested `Engineering/Projects/` path.
+    Affects `nhsengineering` only. — 2026-08-19
+
+23. **Ollama is pre-installed on all 20 lab Macs ahead of class — not thumb
+    drives handed to students, not a live pull during class.** A live pull
+    risks the school network/content filter blocking a multi-gigabyte model
+    download; thumb-drive installs move the same risk ~20 times over, live,
+    in front of students. Each Mac has 8 local accounts, one per class
+    period. The Ollama app installs once per machine (shared via
+    `/Applications`); the model is pulled once per machine into a shared
+    folder (`/Users/Shared/ollama-models`) and each of the 8 accounts'
+    `~/.ollama/models` is symlinked to it, rather than duplicating a
+    multi-gigabyte model 8 times per machine. Model weights are read-only
+    during inference, so sharing one copy across accounts on the same
+    machine is safe. Affects `nhsengineering` only. — 2026-08-19
+
+24. **Unit 02 is Agile, not waterfall: a PRD defines an MVP, then backlog
+    features get added one at a time — and that staging applies to the
+    AI handoff too, not just the project schedule.** Feeding an AI the
+    whole PRD at once and getting the whole game back, then testing at the
+    end, is the same spec-everything-then-build-everything shape as
+    waterfall. Prompting one requirement at a time keeps a broken result
+    traceable to one recent change, which is what makes testing and
+    correcting teachable skills rather than "read 200 lines and guess."
+    Affects `nhsengineering` only. — 2026-08-19
+
+25. **A thread has no fixed step count. Work in one Ollama thread as long as
+    it stays fast; when it slows down, start a new thread and hand it a
+    copy of the current code and an updated PRD.** This was chosen over a
+    fixed 1-4-step-per-thread rule so the slowdown becomes something a
+    student discovers for themselves rather than a rule imposed on them —
+    the point is to teach the real cost of a long AI chat thread, not just
+    assert it. The PRD, not the thread, is the record of what the project
+    should do; thread resets are not tracked or graded. Affects
+    `nhsengineering` only. — 2026-08-19
+
+26. **Unit 02 grading is settled: 20 points on time, 18 late, a redo comes
+    back until it is right and then scores 18, an unfinished project scores
+    a zero.** This replaces `course.js`'s `{{GRADING}}` TODO with real text,
+    for all of Unit 02's guides at once, since the placeholder is shared.
+    The text names no other unit and no other project — it was first
+    written as "the same grading as Unit 01," but that put a
+    cross-reference into printed, per-guide text for no reason: the rule
+    itself doesn't depend on Unit 01 existing, and a Unit 02 guide printed
+    on its own shouldn't send a student looking for an "Unit 01" it never
+    mentions otherwise. Affects `nhsengineering` only. — 2026-08-19
+
+27. **Project 03 (`p03.md`) is written and builds clean: a teacher-given
+    prompt asks Ollama for a bouncing circle, not a square**, deliberately
+    different from P02's shape — 500×400 light gray window, 60-pixel
+    radius, color changes to a random color on each wall bounce — so P03
+    doesn't read as a reskin of P02 with the AI doing the typing. The
+    prompt is supplied in the guide verbatim; students write their own
+    starting Project 04. Affects `nhsengineering` only. — 2026-08-19
+
+28. **Students prompt Ollama through its desktop app, never the `ollama`
+    CLI, and no guide will mention the CLI at all.** The app's per-code-block
+    Copy button copies only the code, not surrounding prose — with the CLI,
+    a student would have to hand-select the code out of a paragraph in
+    Terminal, exactly the kind of error a copy-paste-only workflow (see #29)
+    can't afford. Leaving the CLI installed but never mentioned avoids
+    steering students toward the wrong tool without needing to hide or
+    remove it. Affects `nhsengineering` only. — 2026-08-19
+
+29. **Unit 02 is Level 4 AI-assisted development: humans write the prompt
+    and check the result; the AI writes all the code. Reading or writing
+    code is not a goal of this unit, at any project, including the ones
+    already written (P01, P02 predate this framing but don't conflict with
+    it — they were hand-typed rehearsal, not AI output to inspect).**
+    Verification is behavioral only: run the program, check what it does
+    against the prompt, never open the code to look. This reframes #24's
+    "traceable to one recent change" — traceable by re-running and
+    re-observing behavior, not by reading a diff. A guide distinguishes two
+    failure cases, taught separately (first in P03, Steps 7 and 9): a
+    **crash** (an error instead of a window) is fixed by copying the error
+    text back to Ollama with "this crashed, fix it" — treating the
+    traceback as another piece of AI output to copy-paste, not something to
+    interpret — while code that **runs but doesn't match the prompt** is
+    fixed by resending the prompt. Affects `nhsengineering` only. — 2026-08-19
+
+30. **Ollama reaches the 20 lab Macs via a USB thumb drive and one script,
+    `tools/install-ollama.sh`, run once per machine.** This is the concrete
+    mechanism for #23's shared-folder/symlink architecture, not a change to
+    it: Ray builds the drive on his own Mac (pulls the model, copies
+    `Ollama.app`), then the script — run as admin from the drive on each lab
+    Mac — installs the app, strips its quarantine flag (it was downloaded on
+    a different machine and never touched these Macs' network), copies the
+    model to `/Users/Shared/ollama-models`, creates the `/usr/local/bin/ollama`
+    CLI symlink the app's own first-launch flow would otherwise create, and
+    symlinks each of the 8 local accounts to the shared model folder. The
+    accounts are a hardcoded list — `blue01`–`blue04`, `red01`–`red04` — not
+    a UID-based heuristic, so the script can't accidentally touch some other
+    account that happens to share the UID range. One combined script rather
+    than separate install/wire-up scripts, per the standing rule that a step
+    worth doing belongs in the automation, not left as a manual follow-up to
+    repeat correctly 20 times. Model: `qwen2.5-coder:7b`, sized for these
+    Macs' 16GB of Apple Silicon unified memory — larger MoE coder models
+    need more RAM than the lab has. Affects `nhsengineering` only. —
+    2026-08-19
+
+31. **A stray screenshot Ray drops at the repo root while drafting a guide
+    gets moved into that guide's `images/` folder as part of the same work**,
+    not left in place or flagged for him to move by hand. — 2026-08-19

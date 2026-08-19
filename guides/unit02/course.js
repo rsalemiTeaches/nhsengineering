@@ -9,13 +9,11 @@
 
 module.exports = meta => ({
 
-  // DRAFT — Unit 02's grading policy has not been decided yet (Unit 01's is
-  // settled in DECISIONS #12, but this course is different: fewer, smaller
-  // deliverables, no sim/real split). Replace this before any guide in this
-  // folder is built for real.
+  // Settled 2026-08-19: same grading as Unit 01 (DECISIONS #12) — "lab"
+  // becomes "project" since Unit 02 has no sim/real split to describe.
   GRADING:
-    "TODO: grading policy for Unit 02 has not been decided yet. This " +
-    "placeholder text must be replaced before this guide is built for " +
-    "students.",
+    "A project is 20 points on time, 18 points late. A redo comes back " +
+    "until it is right, and then scores 18. An unfinished project scores " +
+    "a zero.",
 
 });

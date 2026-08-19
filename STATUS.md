@@ -17,19 +17,35 @@ reading the state of another. Robotics keeps its own set in `nhsrobotics`.
 ## Repos involved
 
 - **`nhsengineering`** (`~/repos/sch_repo/nhsengineering`) — **this folder, and
-  home.** Guide source in `guides/unit01/`, the builder as a submodule in
-  `builder/`, the Google Docs
-  importer in `tools/`, vendored libraries in `third_party/`, the
-  `intro2programming` notebooks as a submodule under `coursework/`.
-- **`Class Development`** — the deployed documents, and NOT home. Finished
-  guides land in `Engineering/Projects/Unit 01—Electronics/`. The original
-  Google Docs were moved to `Engineering/Unit 01 Google Doocs/` — the folder
-  name has a typo.
+  home.** Guide source in `guides/unit01/` and `guides/unit02/`,
+  ~~the builder as a submodule in `builder/`~~ — 2026-08-19: wrong, the
+  builder submodule is checked out as `shared/`, not `builder/`; REFERENCE.md's
+  prose is stale even though its own example commands already say `shared/`.
+  The Google Docs importer is in `tools/`, vendored libraries in `third_party/`,
+  the `intro2programming` notebooks as a submodule under `coursework/`.
+- **`Class Development`** — the deployed documents, and NOT home. Unit 01
+  guides land in `Engineering/Projects/Unit 01—Electronics/`. Unit 02 guides
+  deploy to `Unit 02—Software Engineering/`, at that folder's root — not
+  nested under `Engineering/`, unlike Unit 01. The original Unit 01 Google
+  Docs were moved to `Engineering/Unit 01 Google Doocs/` — the folder name has
+  a typo.
 
-## Current unit
+## Sandbox setup
 
-**Unit 01 Electronics. Ten guides, imported from Google Docs and building to
-PDF. None has been taught from in this form.**
+No sandbox needed beyond the `shared/` submodule sync, which `start-thread`
+already runs automatically. Building a guide to PDF works in a fresh
+sandbox as long as the guide has no emoji in it — see the Unit 01 note
+below about `🤖` and the build machine deciding the font.
+
+## Current units
+
+Two units are active: Unit 01 (Electronics, importing/polishing finished
+guides) and Unit 02 (Software Engineering, being written from scratch).
+
+## Unit 01 — Electronics
+
+**Ten guides, imported from Google Docs and building to PDF. None has been
+taught from in this form.**
 
 | # | Guide | Pages |
 |---|---|---|
@@ -130,3 +146,70 @@ original Google Doc form, and they work. See [DECISIONS #17](DECISIONS.md).
 - **Correcting the 220Ω resistor photographs.** Deliberate — Tinkercad draws
   three colour bands and the real parts have four, so no one picture works for
   both. [DECISIONS #2](DECISIONS.md).
+
+## Unit 02 — Software Engineering
+
+**Coding with AI: writing specs (PRDs) and testing what the AI produces —
+not software program management.** [DECISIONS #19](DECISIONS.md). This is
+Level 4 AI-assisted development: the AI writes all the code, humans write
+the prompt and check the result, and reading or writing code is not a goal
+of this unit at any project. Verification throughout is behavioral only —
+run it, check it against the prompt, never open the code.
+[DECISIONS #29](DECISIONS.md). Guides live in `guides/unit02/`, named
+`pNN.md` (Unit 01 owns `eNN`), each with their own `course.js` and
+`deploy.txt`.
+
+### What's done
+
+- **Project 01 (`p01.md`) and Project 02 (`p02.md`) are written and build
+  clean.** P01 sets up the whole term's tools once: terminal, one git repo
+  at `swdev/` for every project this term, `uv` (via `brew install uv`),
+  and `pico` as the editor. P02 hand-types a pygame square that bounces off
+  all four walls, paced with `clock.tick(60)` — deliberately rehearsing, by
+  hand, the "box bounces around the screen" shape students will later ask
+  an AI to build. Neither project uses AI yet. [DECISIONS #22](DECISIONS.md).
+- **Students work from printed guides, not a screen.**
+  [DECISIONS #21](DECISIONS.md).
+- **The old Drive content for "Unit 02" does not carry over**, except
+  possibly the game roster. `Class Development/Unit 02—Software
+  Engineering/` still has the old `Software Change Request` bug-tracking
+  form (a past program-management class, not this one) and a
+  `Game Assignments.pdf` roster (14 students across Pong/Breakout/Snake/
+  Space Invaders/Frogger) that may still be reused for game assignment.
+  [DECISIONS #19](DECISIONS.md).
+- **Ollama deployment is settled, mechanism and all**: a USB thumb drive
+  and one script, `tools/install-ollama.sh`, installs the app, the model,
+  and wires up all 8 local accounts (`blue01`–`blue04`, `red01`–`red04`) on
+  a lab Mac in one run — no live network pull, no per-account manual setup.
+  See `OLLAMA-SETUP.md` for the full build-the-drive-then-run-it process.
+  Model is `qwen2.5-coder:7b`, sized for the lab Macs' 16GB Apple Silicon.
+  [DECISIONS #23, #30](DECISIONS.md).
+- **Unit 02 grading is settled**: 20 points on time, 18 late, a redo scores
+  18 once it's right, an unfinished project scores a zero. Same numbers as
+  Unit 01, but the printed text stands on its own — no cross-reference to
+  another unit. [DECISIONS #26](DECISIONS.md).
+- **Project 03 (`p03.md`) is written and builds clean.** Introduces Ollama:
+  a teacher-given prompt (students write their own starting P04) asks for a
+  bouncing circle — deliberately different window size, radius, and
+  bounce-color behavior from P02's square. Students prompt through the
+  Ollama desktop app only, never the CLI, so they use its per-block Copy
+  button instead of hand-selecting code out of Terminal text. Verification
+  is behavioral only — run it, check it against the prompt, never read the
+  code — and a crash (error, no window) is handled as its own step,
+  separate from "runs but doesn't match": paste the error back to Ollama
+  and ask it to fix it. [DECISIONS #27, #28, #29](DECISIONS.md).
+
+### What's open
+
+- **Project 04 onward not written.** Project 04 is where students write
+  their own PRD/prompt for their assigned game's MVP for the first time,
+  working from the shared "box bounces off the walls" shape P02 and P03
+  both rehearsed.
+- **Thread-reset mechanics are designed but not yet written into a
+  guide**: work in one Ollama thread as long as it stays fast; when it
+  slows down, start a new thread and hand it the current code plus an
+  updated PRD. The PRD, not the thread, is the record of what the project
+  should do. [DECISIONS #24, #25](DECISIONS.md).
+- **An unexplained `game.py` and a screenshot showed up untracked** in
+  `swdev` during Ray's own hands-on test of the guides — not created by
+  either guide, purpose unconfirmed.
