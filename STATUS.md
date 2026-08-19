@@ -188,6 +188,37 @@ run it, check it against the prompt, never open the code.
   18 once it's right, an unfinished project scores a zero. Same numbers as
   Unit 01, but the printed text stands on its own — no cross-reference to
   another unit. [DECISIONS #26](DECISIONS.md).
+- **The unit is ten projects, one class period each, and the MVP finishes at
+  P07** — not a separate MVP project. P01–P03 are the same for everyone;
+  P04 onward each student builds their own assigned game one piece at a time.
+  [DECISIONS #32](DECISIONS.md).
+- **Projects 04 and 05 are written and build clean.** P04 is the first PRD a
+  student writes themselves and gets their game's player moving with the
+  keyboard; P05 adds the one mechanic that makes it their game, and is the
+  first time they hand Ollama existing code and ask for one addition. Both
+  carry a per-game section — Pong, Breakout, Snake, Space Invaders, Frogger —
+  so one guide serves all five without going vague. P05 introduces the thing
+  P06 onward depends on: re-checking the *old* requirements after every
+  addition, since an AI rewriting a program breaks working things silently.
+  [DECISIONS #32, #33, #34, #35](DECISIONS.md).
+- **Students attach files to Ollama, never paste them.** P04 attaches
+  `PRD.md`; P05 onward attaches both `PRD.md` and `game.py` every chat, and
+  types only the one new requirement. Attaching the PRD is not the same as
+  asking for the whole game — it is how the AI knows what not to break.
+  [DECISIONS #38](DECISIONS.md).
+- **The long-thread lesson is taught in P04**, at Step 11 — why a chat slows
+  down, how to reset it, and no rule about when. P05 relies on it.
+  [DECISIONS #25, #39](DECISIONS.md).
+- **The MVP is built one requirement at a time**, not as one whole-game
+  prompt. [DECISIONS #33](DECISIONS.md).
+- **All work from P04 on lives in one folder, `swdev/game/`**, with one
+  `game.py` and one `PRD.md`. The PRD is updated before the code, every
+  project. Each project ends with a commit and a `pNN` git tag; recovery is
+  `git checkout pNN -- game/game.py`. [DECISIONS #34, #35](DECISIONS.md).
+- **The Unit 02 checkoff sheet is generated** by `guides/unit02/tracker.js`,
+  one Done column instead of Unit 01's Sim/Real pair, listing all ten
+  projects. PowerSchool is the official record of completion.
+  [DECISIONS #36](DECISIONS.md).
 - **Project 03 (`p03.md`) is written and builds clean.** Introduces Ollama:
   a teacher-given prompt (students write their own starting P04) asks for a
   bouncing circle — deliberately different window size, radius, and
@@ -201,15 +232,19 @@ run it, check it against the prompt, never open the code.
 
 ### What's open
 
-- **Project 04 onward not written.** Project 04 is where students write
-  their own PRD/prompt for their assigned game's MVP for the first time,
-  working from the shared "box bounces off the walls" shape P02 and P03
-  both rehearsed.
-- **Thread-reset mechanics are designed but not yet written into a
-  guide**: work in one Ollama thread as long as it stays fast; when it
-  slows down, start a new thread and hand it the current code plus an
-  updated PRD. The PRD, not the thread, is the record of what the project
-  should do. [DECISIONS #24, #25](DECISIONS.md).
+- **Projects 06 through 10 not written.** P06 puts a score on screen, P07
+  adds win/lose/restart and completes the MVP, P08 is the visual reskin,
+  P09 and P10 are one backlog feature each. Their titles are already
+  printed on the checkoff sheet by `tracker.js`, so a title change there
+  means regenerating the sheet.
+- **`shared/` has an uncommitted fix and an uncommitted test**
+  ([DECISIONS #37](DECISIONS.md)) — `build-all.sh` no longer demands
+  `Class Development` on a non-deploy run. Both robotics repos get it when
+  their pins move, and per #11 that means rebuilding and eyeballing their
+  guides.
+- **No Unit 02 guide has been deployed from this thread.** `Class
+  Development` was not mounted, so P04, P05 and the checkoff sheet were
+  built but not copied to Drive.
 - **An unexplained `game.py` and a screenshot showed up untracked** in
   `swdev` during Ray's own hands-on test of the guides — not created by
   either guide, purpose unconfirmed.

@@ -367,3 +367,113 @@ a thread about one would open by reading the state of another.
 31. **A stray screenshot Ray drops at the repo root while drafting a guide
     gets moved into that guide's `images/` folder as part of the same work**,
     not left in place or flagged for him to move by hand. — 2026-08-19
+
+32. **Unit 02 is ten projects, one class period each, and the MVP is finished
+    at Project 07 — it is not a project of its own.** P01–P03 are the same for
+    everyone (tools, hand-typed bouncing square, AI-written bouncing circle).
+    From P04 on, every student is building their own assigned game one piece
+    at a time: P04 the player moving, P05 the game's core mechanic, P06 score
+    on screen, P07 win, lose and restart. P07 is where the game becomes
+    playable start to finish, which is the MVP — a separate "confirm your MVP"
+    period would spend a class on something the P07 checkoff already does.
+    P08 is the visual reskin, P09 and P10 are one backlog feature each.
+
+    Titles for P06–P10 are named in `guides/unit02/tracker.js`, which prints
+    the full ten to the student's checkoff sheet. Only P01–P05 are written.
+    — 2026-08-19
+
+33. **The MVP is built one requirement at a time, like everything after it.
+    There is no whole-MVP prompt.** The alternative considered was letting
+    the student write one PRD covering the entire bare-bones game — controls,
+    animation, scoring — and hand it to Ollama in a single prompt, saving
+    incremental prompting for backlog features only. Rejected: a bare game
+    still has three or four independent pieces, and #29 forbids reading the
+    code, so a student who gets a whole game back that scores wrong has no
+    way to tell which sentence of their PRD caused it. #24's whole argument —
+    a broken result must be traceable to one recent change — applies hardest
+    at the point where a student is writing a PRD for the first time, not
+    least. Affects `nhsengineering` only. — 2026-08-19
+
+34. **From Project 04 on, all work lives in one folder, `swdev/game/`, with
+    one `game.py` and one `PRD.md`.** P01–P03 each got a throwaway `projNN/`
+    folder. The game does not: every project after P03 edits the same program,
+    and each one's prompt starts by pasting in the code the last one produced.
+
+    `PRD.md` is markdown, sits beside the code, and is updated *before* the
+    code every project. That ordering is the point — #25 already ruled that
+    the PRD, not the chat thread, is the record of what the project should do,
+    and a PRD written after the fact is a changelog, not a spec. It also gives
+    the student something concrete to check the running program against, which
+    is the only form of verification #29 allows. Affects `nhsengineering`
+    only. — 2026-08-19
+
+35. **Every project from 04 on ends with a commit and a git tag `pNN`, and
+    going back means restoring one file, not checking out a branch.** The
+    guide teaches `git checkout p04 -- game/game.py` — restore that file from
+    that bookmark, leave everything else alone. Deliberately not
+    `git checkout p04`, which detaches HEAD and needs a branch name to get
+    back from; `git init` does not promise whether that name is `main` or
+    `master`, and a printed guide (#21) cannot check. Restoring one file has
+    no such trap and is what a student actually wants when a bad prompt
+    wrecks a working game. Affects `nhsengineering` only. — 2026-08-19
+
+36. **Unit 02's checkoff sheet has one Done column, and PowerSchool is the
+    official record.** `guides/unit02/tracker.js` is a copy of Unit 01's
+    shape, minus the Sim/Real split — software has no simulator half; a
+    project either runs and matches its own PRD or it does not. The Due cell
+    keeps the late diamond for the same reason it does in #13. The sheet
+    lists all ten projects with descriptions, including ones not yet
+    assigned, so it doubles as the student's map of the unit. The grade in
+    PowerSchool, not this sheet, is the record of completion. Affects
+    `nhsengineering` only. — 2026-08-19
+
+37. **`build-all.sh` only looks for `Class Development` on a `-d` run.** It
+    used to resolve `deploy.txt` before it had even parsed its arguments, so
+    a machine without the Drive folder mounted could not build a guide at
+    all — it exited 1 with a deploy error on a plain build. Building and
+    deploying are separate jobs and only one of them needs the folder.
+    `test-build.js` covers both halves: a plain run succeeds without ever
+    naming Class Development, and a `-d` run still fails and still says which
+    folder `deploy.txt` asked for. The test costs nothing to run because the
+    scratch guide's PDF is already current, so the run reports "up to date"
+    and never reaches LibreOffice. This is a `shared/` change, so **it affects
+    `nhsrobotics` and `advrobotics` too, when their pins move** — see #11.
+    — 2026-08-19
+
+38. **A student attaches files to Ollama rather than pasting their contents,
+    and from P05 on that means both `PRD.md` and `game.py`, every chat.**
+    The Ollama desktop app reads a dragged `.md` or `.py`, so there is no
+    reason to retype a PRD into a chat box: a pasted PRD is a copy, and
+    copies drift from the file the student later checks their game against.
+
+    P04 attaches `PRD.md` alone, because at that point the PRD is the whole
+    ask and there is no code yet. **P05 onward attaches both.** The code is
+    what the program does; the PRD is what it is supposed to do, and only
+    one of those is a statement of intent. A fresh chat handed only
+    `game.py` cannot tell a deliberate behavior from the bug it is being
+    asked to fix. This is what #25 already said — "hand it a copy of the
+    current code *and* an updated PRD" — and an earlier version of this
+    entry contradicted it by sending code alone.
+
+    The worry that drove that mistake was real but misplaced: attaching the
+    whole PRD is not the same as *asking for* the whole game. #24's
+    one-requirement-at-a-time rule is about the ask, and the ask is still
+    one line plus "do not change anything else." The PRD's job in the
+    prompt is to tell the AI what it must not break.
+
+    Both ways of attaching are given — the paperclip button, or dragging
+    from a Finder window opened with `open .`. Naming a button in an app is
+    not what #21 rules out; that is about links and copyable commands, and
+    P03 already says "click the Copy button." Affects `nhsengineering`
+    only. — 2026-08-19
+
+39. **The long-thread lesson lands in P04, not later.** #25 settled the
+    mechanism — stay in one thread while it is fast, reset with the current
+    code and an updated PRD when it is not — but left where to teach it
+    open. P04 is where a student first goes several rounds with Ollama on a
+    prompt they wrote themselves, so it is the first place the slowdown is
+    something they have actually felt rather than been warned about. The
+    guide explains the cause (the model re-reads the whole conversation
+    every message), gives the reset steps, and explicitly refuses to give a
+    message count — noticing the drag is the skill. P05 then relies on it
+    rather than re-teaching it. Affects `nhsengineering` only. — 2026-08-19
