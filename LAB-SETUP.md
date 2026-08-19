@@ -1,0 +1,218 @@
+# Lab Deployment — Thumb Drive Install
+
+Everything Unit 02 needs on a lab Mac: **Ollama** (with the model already
+pulled) and **CotEditor** (the editor the guides use). For 20 lab Macs
+(Apple Silicon, 16GB RAM), 8 local accounts each. No network pull on any lab
+machine — everything comes off the drive. Model: **qwen2.5-coder:7b** (fits
+comfortably in 16GB unified memory, leaves headroom for pygame running
+alongside it; the larger MoE options need more RAM than these machines have).
+
+## 1. Prepare the thumb drive (on your Mac, with internet)
+
+```bash
+# Install Ollama if you haven't already: https://ollama.com/download
+
+# Pull the model once
+ollama pull qwen2.5-coder:7b
+
+# Quit Ollama fully (menu bar icon → Quit) before copying —
+# don't copy while a blob might still be writing
+```
+
+Get CotEditor from **<https://coteditor.com>** — the direct download, not the
+Mac App Store listing. An App Store copy needs an Apple ID signed in on each
+lab Mac, which is the per-machine manual step this whole drive exists to
+avoid. Same for the Arduino IDE, from <https://arduino.cc>.
+
+### Format the drive Mac OS Extended (Journaled) first
+
+**This is not optional and it is the first thing to get right.** A FAT32 or
+exFAT drive cannot store the symlinks, permissions, or extended attributes
+an `.app` bundle is made of. Drag `Ollama.app` onto one and what arrives has
+a broken code signature; macOS then refuses to launch it with *"You can't
+open the application because it may be damaged or incomplete."* Not a
+warning you can click through, and not fixed by stripping quarantine. FAT32
+additionally caps one file at 4GB, and the model's largest blob is 4.7GB, so
+the model cannot copy intact either.
+
+In Disk Utility, erase the drive as **Mac OS Extended (Journaled)**. APFS
+works too. Then everything below is a plain copy.
+
+```bash
+D=/Volumes/<drive>
+mkdir -p "$D/apps"
+ditto /Applications/Ollama.app        "$D/apps/Ollama.app"
+ditto /Applications/CotEditor.app     "$D/apps/CotEditor.app"
+ditto "/Applications/Arduino IDE.app" "$D/apps/Arduino IDE.app"
+```
+
+`ditto`, not `cp -R`, because it carries the permissions and symlinks a
+bundle needs even between two filesystems that can hold them.
+
+If you are ever stuck on a FAT drive, the script also accepts each bundle
+wrapped as a zip — `ditto -c -k --sequesterRsrc --keepParent App.app
+apps/App.app.zip`. `--keepParent` is mandatory there: without it the archive
+holds the bundle's *contents* rather than the bundle, and extracts as loose
+folders that install nothing. `--check` catches both mistakes, and will tell
+you if you have bare bundles sitting on a FAT volume.
+
+### Stage one model, not your whole collection
+
+**`cp -R ~/.ollama/models` is the wrong command**, and it is the one that
+looks right. It copies every model you have ever pulled. On 2026-08-19 that
+put 22.7GB on the drive — an 18GB model nobody in the class uses, sitting
+beside the 4.7GB one they do — and every one of 20 machines would have paid
+for the difference. About four minutes per Mac, wasted, twenty times.
+
+Blobs are content-addressed and shared between models, so you cannot pick a
+model's worth by eye: delete the wrong digest and Ollama lists a model it
+cannot run. `tools/stage-model.sh` reads the manifest and copies exactly the
+blobs it names.
+
+```bash
+# start clean if the drive already has a mixed models/ folder
+rm -rf /Volumes/<drive>/models
+
+tools/stage-model.sh qwen2.5-coder:7b /Volumes/<drive>/models
+```
+
+It prints each blob and a total, and refuses to stage a model whose blobs
+are not all on disk. Run it with no arguments to list what you have.
+
+### The rest of the payload
+
+```bash
+D=/Volumes/<drive>
+
+# the model — ONE model, staged by name. Never `cp -R ~/.ollama/models`,
+# which copies every model you have ever pulled; see the warning below.
+~/repos/sch_repo/nhsengineering/tools/stage-model.sh qwen2.5-coder:7b "$D/models"
+
+# uv, a single static binary. `which uv` says where brew put it.
+mkdir -p "$D/bin" && cp "$(which uv)" "$D/bin/"
+
+# the script itself
+cp ~/repos/sch_repo/nhsengineering/tools/install-lab-software.sh "$D/"
+
+# which in-bundle tools get a symlink on the lab Macs
+cat > "$D/clitools.txt" <<'EOF'
+ollama :: Ollama.app/Contents/Resources/ollama
+cot    :: CotEditor.app/Contents/SharedSupport/bin/cot
+EOF
+```
+
+Then seed the uv caches, so no student ever downloads pygame in class. On a
+Mac OS Extended drive you can build them straight onto it:
+
+```bash
+mkdir -p /tmp/uvseed && cd /tmp/uvseed && touch seed.py
+UV_CACHE_DIR="$D/uv-cache" UV_PYTHON_INSTALL_DIR="$D/uv-python" uv add --script seed.py pygame
+UV_CACHE_DIR="$D/uv-cache" UV_PYTHON_INSTALL_DIR="$D/uv-python" uv run seed.py
+```
+
+Both variables are needed: `UV_CACHE_DIR` holds the wheels, and
+`UV_PYTHON_INSTALL_DIR` holds the interpreter, which the cache variable does
+not cover. A uv-managed Python contains symlinks (`bin/python3` →
+`python3.13`), which is the other reason the drive cannot be FAT — on one of
+those, build these locally and `tar -cf "$D/uv-python.tar" -C <local> .`
+instead. The script accepts either form.
+
+Optionally, add Arduino board packages for the one account per machine that
+needs them. Launch the IDE once on your Mac, then:
+
+```bash
+ditto ~/Library/Arduino15 "$D/arduino15"
+```
+
+and set `ARDUINO_ACCOUNTS` at the top of the script. `--check` will complain
+if the folder is on the drive and that list is still empty.
+
+### Check the drive before you carry it anywhere
+
+```bash
+cd /Volumes/<drive name>
+./install-lab-software.sh --check
+```
+
+No sudo, changes nothing, takes a second. It lists every problem at once —
+a missing folder, a zip made without `--keepParent`, a malformed
+`clitools.txt`. Finding a bad payload at your desk costs a minute; finding
+it on the twentieth Mac costs the afternoon.
+
+## 2. Install on each lab Mac (offline, no network needed)
+
+One command per machine, run as admin from the drive:
+
+```bash
+cd /Volumes/<drive name>
+sudo ./install-lab-software.sh
+```
+
+It extracts every app in `apps/` with `ditto`, strips quarantine flags,
+verifies each signature, installs `bin/*` to `/usr/local/bin`, symlinks the
+in-bundle tools named in `clitools.txt`, copies the model and the uv caches
+to `/Users/Shared` (one copy per machine, not one per account — DECISIONS
+#23), symlinks all 8 accounts' `~/.ollama/models` to the shared model, seeds
+Arduino board packages for the accounts you named, and writes the two `uv`
+environment variables to `/etc/zshenv` so every account gets them. Safe to
+re-run. No need to log into any of the 8 accounts by hand.
+
+Nothing is hardcoded to a particular app. To add a tool later, put its zip
+in `apps/` and run the script again.
+
+**Budget about 5 minutes per machine**, most of it the model copy — measured
+at 4m58s on a Lexar exFAT stick reading at roughly 16 MB/s. That is about
+1.7 hours for 20 Macs, serially. If you want it faster, clone the payload
+onto two more sticks and do three machines at once; nothing in the script
+changes.
+
+## 3. Verify
+
+In each account, launch Ollama once, then in Terminal:
+
+```bash
+ollama list
+```
+
+Should show `qwen2.5-coder:7b` immediately — no download. Then:
+
+```bash
+ollama run qwen2.5-coder:7b "print hello world in python"
+```
+
+confirms it actually runs. For the editor:
+
+```bash
+cot --help
+```
+
+should print CotEditor's usage. Every Unit 02 guide opens files with `cot`,
+so if this fails the guides do not work.
+
+Then the one that matters most, because it is the step that happens in class
+rather than at setup:
+
+```bash
+mkdir -p /tmp/check && cd /tmp/check
+touch t.py
+uv add --script t.py pygame
+uv run t.py
+```
+
+This must finish in seconds. **If it downloads anything, the uv seed is
+incomplete** and every student in every period will hit the network the
+first time they run a project — 160 downloads on the school network, live,
+in front of a class. That is the failure #23 was written to prevent, and it
+is the one that will not announce itself until September.
+
+## Notes
+
+- Model weights are read-only at inference time, so all 8 accounts sharing
+  one copy via symlink is safe — no write conflicts.
+- If a machine has less free disk than expected, `qwen2.5-coder:7b` is
+  roughly 4.7GB on disk (Q4 quantization, Ollama's default pull).
+- This whole process avoids the network/content-filter risk of pulling a
+  multi-gigabyte model on the school network — see DECISIONS #23. The
+  difference from #23's original plan is *how* the bits get onto each
+  machine (thumb drive vs. whatever was assumed before); the shared-folder/
+  symlink architecture for the 8 accounts is unchanged.

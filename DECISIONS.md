@@ -477,3 +477,205 @@ a thread about one would open by reading the state of another.
     every message), gives the reset steps, and explicitly refuses to give a
     message count — noticing the drag is the skill. P05 then relies on it
     rather than re-teaching it. Affects `nhsengineering` only. — 2026-08-19
+
+40. **The editor is CotEditor, installed from the direct download, not
+    `pico` and not the Mac App Store.** `pico`'s modal Control-O / Return /
+    Control-X save dance costs a line of instruction in every guide and
+    buys nothing, and it made replacing AI-written code into a `rm` and
+    retype. CotEditor is free, native, open source, about twenty years old,
+    and has no AI features of its own — which matters, because an editor
+    that autocompletes code would quietly undercut #29's rule that the AI
+    writes all the code and the student never reads it.
+
+    **The direct download from coteditor.com, not the App Store listing.**
+    An App Store install needs an Apple ID signed in on each lab Mac, which
+    is exactly the per-machine manual step #23 and #30 exist to eliminate.
+    Editorio was considered first and rejected on this alone: it is App
+    Store only, with no DMG and no Homebrew tap, so it would have needed an
+    MDM request to someone else and could not have gone on the drive.
+
+    Consequences, all already made:
+
+    - `tools/install-ollama.sh` is now `tools/install-lab-software.sh` and
+      installs both apps, strips both quarantine flags, and symlinks both
+      `ollama` and `cot` into `/usr/local/bin`. One script, per #30.
+    - `OLLAMA-SETUP.md` is now `LAB-SETUP.md`, and the drive carries four
+      things instead of three.
+    - Every guide opens a file with `touch NAME` then `cot NAME`, and saves
+      with Command-S. `touch` first, because `cot` is for opening a file
+      that exists.
+    - Replacing AI-written code is Command-A, Command-V, Command-S in the
+      open tab. **This wipes the header `uv add --script` wrote at the top
+      of the file**, so P04 and P05 both tell the student to re-run that
+      command if pygame goes missing. That is the one cost of the change,
+      and it is cheaper than the `rm`-and-retype it replaces.
+
+    Affects `nhsengineering` only. — 2026-08-19
+
+41. **The install script is manifest-driven, `.app` bundles travel as
+    `ditto` zips, and everything a student needs is pre-installed by an
+    admin — including `uv` and the pygame wheel.** Four findings forced
+    this, all on 2026-08-19, all found by testing on real hardware rather
+    than reasoning about it:
+
+    - **An `.app` copied to the exFAT drive arrives broken.** exFAT cannot
+      store the symlinks, POSIX permissions or extended attributes a bundle
+      is made of, so the code signature fails and macOS refuses it:
+      "damaged or incomplete." Observed with `Ollama.app`. Bundles now go on
+      the drive as `ditto -c -k --sequesterRsrc --keepParent` archives and
+      come off with `ditto -x -k`. `--keepParent` is mandatory and
+      `--check` verifies it, because without it the archive holds the
+      bundle's contents rather than the bundle and installs nothing.
+      Reformatting the stick to APFS would also work but costs a 20-minute
+      recopy and buys nothing the zip does not.
+
+    - **The offline install stands; the "days" estimate was measured in the
+      wrong direction.** Writing 4.7GB to the stick took 20 minutes, which
+      is what made a network pull look necessary. Reading it back — what
+      each lab Mac actually does — is about 16 MB/s: a full install measured
+      **4m58s** on real hardware, so 20 Macs is ~1.7 hours serially, or
+      under an hour with three sticks. #23 and #30 are unchanged. No
+      network pull, no MDM request.
+
+    - **`uv` was the real network hole, not the model.** `uv add --script`
+      and `uv run` fetch the pygame wheel and possibly an interpreter from
+      PyPI, cached *per account* in `~/Library/Caches/uv` — up to 160 live
+      downloads across 8 accounts and 20 Macs, happening in class rather
+      than at setup. Both caches are now seeded from the drive into
+      `/Users/Shared` and every account is pointed at them via two
+      variables written to `/etc/zshenv`: `UV_CACHE_DIR` for the wheels and
+      `UV_PYTHON_INSTALL_DIR` for the interpreter. Two variables, not one,
+      because the cache variable does not cover Python installs. The uv
+      cache is read-write, unlike the model, so it is not `a+rX`.
+
+    - **Copy what can be copied; Homebrew only for real dependencies.**
+      `uv` is one static binary, so it rides on the drive in `bin/` and is
+      installed to `/usr/local/bin`. Going through brew would need brew on
+      each machine, a network round trip, and a `sudo -u` dance because
+      brew refuses to run as root — all to place one file. Nothing on the
+      list currently needs brew. `git` is already present (Apple Git 2.39.5
+      via Xcode CLT), so it needs nothing.
+
+    A consequence for the guides: **P01's `brew install uv` step is gone.**
+    A non-admin lab account could never have run it, so it was a live bug,
+    not just a redundancy. P01 now verifies `uv --version` and tells the
+    student to stop and get the teacher if it fails.
+
+    The script takes its payload from folders on the drive — `apps/*.zip`,
+    `bin/*`, `clitools.txt`, `models/`, `uv-cache/`, `uv-python/`,
+    `arduino15/` — so adding a tool means dropping it on the drive, not
+    editing a script last read in August. `--check` validates the whole
+    payload with no sudo and no writes, and is the only automated test this
+    script can have: the install itself needs root and real hardware.
+
+    Three things learned running it on real hardware, all now fixed:
+
+    - **The signature check is structural, not `codesign`.** `codesign
+      --verify` warned on both `Ollama.app` and `CotEditor.app` while both
+      launched perfectly — it is strict about things Gatekeeper does not
+      block. A warning that fires on healthy apps only teaches you to ignore
+      warnings, and the corruption it was meant to catch is already
+      prevented by #44's HFS+ requirement. It now checks that
+      `Contents/MacOS` is non-empty and fails hard if not.
+    - **The environment block goes in three files, not one.** `/etc/zshenv`
+      alone assumes zsh. An account on the test Mac was still bash — macOS
+      has defaulted to zsh since Catalina, but an older or
+      script-created account keeps bash — and a student there would never
+      see `UV_CACHE_DIR`, so uv would use its own empty cache and download
+      in class. Now `/etc/zshenv`, `/etc/profile` and `/etc/bashrc`, and the
+      install prints each account's actual shell so this cannot hide again.
+    - **Shared data copies with `rsync --size-only`, not `cp -R`.** A
+      re-run was recopying all 4.4GB every time. Re-running is normal —
+      after adding a tool, or after logging into an account so its Dock
+      exists — so it now skips what is already there at the right size. 70
+      seconds becomes under a second.
+
+    ~~**The script pins every installed app plus Terminal to all 8
+    accounts' Docks.** Policy: pin everything pinnable.~~
+
+    **Removed the same day, and it did damage on the way out.** Three
+    reasons, in order of weight:
+
+    - `defaults write` against *another* user's plist path while running as
+      root does not reliably write there. On the test Mac it wiped
+      `persistent-apps` for the lab accounts and reset labadmin's Dock to
+      Apple's default. Because the code rebuilt the array wholesale instead
+      of appending, a partial failure meant total loss rather than no
+      change — either mistake alone would have been survivable.
+    - An account that has never been logged into has no Dock plist at all,
+      so it was skipped — 3 of 8 on the test Mac. Working around that meant
+      either logging into 160 accounts by hand or installing a LaunchAgent
+      on 20 machines, both of which cost more than the problem.
+    - The Dock is cosmetic. P01 already teaches ⌘-Space, so a student with
+      a default Dock loses convenience and nothing else.
+
+    **Students pin their own apps**, in P01 Step 2 — Terminal, Ollama and
+    CotEditor, via right-click → Options → Keep in Dock. One step in a
+    guide replaces a destructive automation, which is the right trade for
+    something no one needed automated.
+
+    Arduino board packages are **copied, not symlinked**, and only into the
+    accounts named in `ARDUINO_ACCOUNTS` — one class of eight uses the
+    Arduino IDE, the IDE writes into that folder, and a shared writable copy
+    across 8 accounts is a support call waiting to happen. Affects
+    `nhsengineering` only. — 2026-08-19
+
+42. **Tinkercad is the one dependency that cannot live on the drive, and it
+    is untested.** Unit 01's Sim half is a website, so it needs accounts and
+    it needs to clear the school content filter. Everything else in either
+    unit now installs offline. This is not a decision so much as the one
+    remaining thing to verify before September, recorded here so it is not
+    rediscovered in a classroom. Affects `nhsengineering` only. — 2026-08-19
+
+43. **The lab drive carries one model, staged by name with
+    `tools/stage-model.sh`. Never `cp -R ~/.ollama/models`.** The obvious
+    command copies every model ever pulled. Found on the real drive: 22.7GB
+    where the class needs 4.7GB — an 18GB blob left orphaned by an earlier
+    `ollama rm`, with no manifest on the drive referencing it at all.
+    `ollama rm` prunes blobs in `~/.ollama`, but a drive made before that rm
+    is a dumb copy and prunes nothing, so the orphan would have ridden to
+    all 20 machines and cost about four minutes on each.
+
+    Blobs are content-addressed and shared between models, so a model's
+    worth cannot be picked by eye — delete the wrong digest and Ollama lists
+    a model it cannot run. The script reads the manifest, copies exactly the
+    digests it names, and refuses to stage a model whose blobs are not all
+    present. Working forward from the manifest rather than copying a folder
+    is what makes orphans on the source unable to travel.
+
+    This also corrects the throughput figure in #41. The measured 4m58s was
+    moving 22.7GB, not 4.7GB, so the stick reads at about **76 MB/s**, not
+    16. A drive carrying one model installs in **1m17s**, measured on real
+    hardware after the fix, putting all 20 at about 26 minutes — which
+    removes any remaining argument for a network pull. Affects `nhsengineering` only. — 2026-08-19
+
+44. **The lab drive is formatted Mac OS Extended (Journaled), and that
+    replaces most of #41's zip and tar machinery.** The drive was exFAT when
+    the first install was attempted. exFAT cannot store the symlinks,
+    permissions or extended attributes an `.app` bundle is made of, and that
+    alone broke `Ollama.app`.
+
+    A note against a wrong claim made while working this out: the Disk
+    Utility erase dialog was read as saying the drive was *FAT32*, and a
+    second failure was inferred from FAT32's 4GB per-file cap against the
+    model's 4.7GB blob. That was a misreading — the dialog had FAT32
+    checked because it is the default for a new erase, not because it was
+    the current format. The 18GB blob already sitting on the drive was
+    proof enough, since FAT32 could not hold it. **There was one failure,
+    not two, and the 4GB cap never applied.** The cap is real and is worth
+    knowing if a FAT32 drive is ever used, which is why `--check` still
+    warns about FAT volumes generally.
+
+    Reformatting is the cheaper fix than working around it: on HFS+ the apps,
+    the model and the uv caches all travel as themselves, copied with
+    `ditto`. #41's zip and tar paths are kept as a supported fallback rather
+    than deleted, because they cost nothing and a future drive might not be
+    reformattable — but they are no longer the documented route.
+
+    `--check` now detects the drive's filesystem with `diskutil` and fails
+    if it finds a bare bundle or a `uv-python/` folder on a FAT volume,
+    which is the specific pairing that looks fine and is already corrupt.
+    On HFS+ the same payload passes. Both paths are tested.
+
+    Drive is named `app_installer`. Affects `nhsengineering` only.
+    — 2026-08-19

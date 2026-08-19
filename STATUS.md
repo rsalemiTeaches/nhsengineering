@@ -164,7 +164,7 @@ run it, check it against the prompt, never open the code.
 - **Project 01 (`p01.md`) and Project 02 (`p02.md`) are written and build
   clean.** P01 sets up the whole term's tools once: terminal, one git repo
   at `swdev/` for every project this term, `uv` (via `brew install uv`),
-  and `pico` as the editor. P02 hand-types a pygame square that bounces off
+  and CotEditor as the editor. P02 hand-types a pygame square that bounces off
   all four walls, paced with `clock.tick(60)` — deliberately rehearsing, by
   hand, the "box bounces around the screen" shape students will later ask
   an AI to build. Neither project uses AI yet. [DECISIONS #22](DECISIONS.md).
@@ -178,10 +178,19 @@ run it, check it against the prompt, never open the code.
   Space Invaders/Frogger) that may still be reused for game assignment.
   [DECISIONS #19](DECISIONS.md).
 - **Ollama deployment is settled, mechanism and all**: a USB thumb drive
-  and one script, `tools/install-ollama.sh`, installs the app, the model,
+  and one script, `tools/install-lab-software.sh`, installs the apps, the model,
   and wires up all 8 local accounts (`blue01`–`blue04`, `red01`–`red04`) on
   a lab Mac in one run — no live network pull, no per-account manual setup.
-  See `OLLAMA-SETUP.md` for the full build-the-drive-then-run-it process.
+  See `LAB-SETUP.md` for the full build-the-drive-then-run-it process. The
+  same drive and script also install CotEditor, the Arduino IDE and `uv`,
+  and seed the uv wheel/interpreter caches so pygame never downloads in
+  class. `.app` bundles travel as `ditto` zips because the exFAT drive
+  corrupts them if copied directly. The drive carries **one** model, staged
+  by name with `tools/stage-model.sh` — `cp -R ~/.ollama/models` put 22.7GB
+  on the real drive, including an 18GB orphan from an earlier `ollama rm`.
+  Measured after the fix: **1m17s per machine**, ~26 minutes for all 20.
+  Run `./install-lab-software.sh --check` before carrying the drive
+  anywhere. [DECISIONS #40, #41, #43](DECISIONS.md).
   Model is `qwen2.5-coder:7b`, sized for the lab Macs' 16GB Apple Silicon.
   [DECISIONS #23, #30](DECISIONS.md).
 - **Unit 02 grading is settled**: 20 points on time, 18 late, a redo scores
@@ -243,8 +252,14 @@ run it, check it against the prompt, never open the code.
   their pins move, and per #11 that means rebuilding and eyeballing their
   guides.
 - **No Unit 02 guide has been deployed from this thread.** `Class
-  Development` was not mounted, so P04, P05 and the checkoff sheet were
+  Development` was not mounted, so the guides and the checkoff sheet were
   built but not copied to Drive.
+- **Tinkercad is untested against the school filter**, and it is the only
+  thing either unit needs that cannot come off the drive.
+  [DECISIONS #42](DECISIONS.md).
+- **`ARDUINO_ACCOUNTS` in `install-lab-software.sh` is empty.** Only one
+  class period of eight uses the Arduino IDE; the account name has not been
+  supplied, so board-package seeding is skipped until it is.
 - **An unexplained `game.py` and a screenshot showed up untracked** in
   `swdev` during Ray's own hands-on test of the guides — not created by
   either guide, purpose unconfirmed.
