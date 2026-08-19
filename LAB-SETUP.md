@@ -154,17 +154,61 @@ in-bundle tools named in `clitools.txt`, copies the model and the uv caches
 to `/Users/Shared` (one copy per machine, not one per account — DECISIONS
 #23), symlinks all 8 accounts' `~/.ollama/models` to the shared model, seeds
 Arduino board packages for the accounts you named, and writes the two `uv`
-environment variables to `/etc/zshenv` so every account gets them. Safe to
-re-run. No need to log into any of the 8 accounts by hand.
+environment variables to `/etc/zshenv`, `/etc/profile` and `/etc/bashrc` so
+every account gets them whichever shell it uses. Safe to re-run. No need to
+log into any of the 8 accounts by hand.
 
-Nothing is hardcoded to a particular app. To add a tool later, put its zip
-in `apps/` and run the script again.
+**Budget about 1m20s per machine** — measured at 1m17s, most of it the model
+copy. That is roughly half an hour for 20 Macs, serially. If you want it
+faster, clone the payload onto two more drives and do three machines at
+once; nothing in the script changes.
 
-**Budget about 5 minutes per machine**, most of it the model copy — measured
-at 4m58s on a Lexar exFAT stick reading at roughly 16 MB/s. That is about
-1.7 hours for 20 Macs, serially. If you want it faster, clone the payload
-onto two more sticks and do three machines at once; nothing in the script
-changes.
+A re-run on a machine already done takes seconds: the model, the wheel cache
+and the Python are skipped if they are already there at the right size. The
+apps re-extract every time, deliberately, so a damaged one heals itself.
+
+## Adding a tool later
+
+Nothing in the script is hardcoded to a particular app. Adding one is a copy
+onto the drive and a re-run — no editing.
+
+**A GUI app.** One command, then re-run the installer on each Mac:
+
+```bash
+ditto /Applications/Foo.app /Volumes/app_installer/apps/Foo.app
+```
+
+Everything in `apps/` gets installed. Use `ditto` rather than `cp -R` so the
+bundle's permissions and symlinks come across intact.
+
+**A command-line tool that lives inside an app bundle.** Add a line to
+`clitools.txt` and the script symlinks it into `/usr/local/bin`:
+
+```
+foo :: Foo.app/Contents/SharedSupport/bin/foo
+```
+
+The path is relative to `/Applications`. This is how `ollama` and `cot` get
+onto the PATH.
+
+**A standalone single-file binary**, like `uv`. Drop it in `bin/`:
+
+```bash
+cp "$(which foo)" /Volumes/app_installer/bin/
+```
+
+**Something with per-account data**, the way the Arduino IDE has board
+packages. That needs a code change — `arduino15/` is wired up by name, not
+by convention, because which accounts get it is a decision and not something
+the script can infer.
+
+Then, always:
+
+```bash
+cd /Volumes/app_installer && ./install-lab-software.sh --check
+```
+
+before you carry the drive anywhere.
 
 ## 3. Verify
 
