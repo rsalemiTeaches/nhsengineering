@@ -305,7 +305,7 @@ fi
 # saves multiplying gigabytes by eight — DECISIONS #23.
 
 copy_shared() {
-  local src="$1" dest="$2" label="$3"
+  local src="$1" dest="$2" label="$3" mirror="${4:-add}"
   if [[ -f "$src.tar" ]]; then
     # Preferred. A uv-managed Python contains symlinks (bin/python3 ->
     # python3.13) and exFAT cannot store them, so a plain folder copy on the
@@ -323,8 +323,22 @@ copy_shared() {
     echo "  $label -> $dest (from folder)"
     mkdir -p "$dest"
     if command -v rsync >/dev/null 2>&1; then
-      rsync -a --size-only "$src/" "$dest/"
+      # --delete for the model, because the drive is the source of truth for
+      # which models exist. Without it, a manifest left by an earlier install
+      # stays and `ollama list` keeps advertising a model whose blobs are
+      # gone — observed on the test Mac, which still listed gemma after the
+      # drive was restaged with only qwen2.5-coder:7b.
+      #
+      # NOT for the uv caches: extra wheels there are harmless, and deleting
+      # whatever a student's uv cached locally would be gratuitous.
+      if [[ "$mirror" == "mirror" ]]; then
+        rsync -a --size-only --delete "$src/" "$dest/"
+      else
+        rsync -a --size-only "$src/" "$dest/"
+      fi
     else
+      [[ "$mirror" == "mirror" ]] && rm -rf "$dest"
+      mkdir -p "$dest"
       cp -R "$src/." "$dest/"
     fi
   else
@@ -336,7 +350,7 @@ copy_shared() {
 
 echo ""
 echo "Copying shared data..."
-copy_shared "$SCRIPT_DIR/models"    "$SHARED_MODELS"    "ollama model"
+copy_shared "$SCRIPT_DIR/models"    "$SHARED_MODELS"    "ollama model" mirror
 copy_shared "$SCRIPT_DIR/uv-cache"  "$SHARED_UV_CACHE"  "uv wheel cache"
 copy_shared "$SCRIPT_DIR/uv-python" "$SHARED_UV_PYTHON" "uv python"
 

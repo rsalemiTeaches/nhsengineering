@@ -585,10 +585,22 @@ a thread about one would open by reading the state of another.
       in class. Now `/etc/zshenv`, `/etc/profile` and `/etc/bashrc`, and the
       install prints each account's actual shell so this cannot hide again.
     - **Shared data copies with `rsync --size-only`, not `cp -R`.** A
-      re-run was recopying all 4.4GB every time. Re-running is normal —
-      after adding a tool, or after logging into an account so its Dock
-      exists — so it now skips what is already there at the right size. 70
-      seconds becomes under a second.
+      re-run was recopying all 4.4GB every time. Re-running is normal, so it
+      now skips what is already there at the right size — 70 seconds becomes
+      under a second. **The model folder additionally mirrors with
+      `--delete`**, because the drive is the source of truth for which
+      models exist: without it, a manifest from an earlier install survived
+      and the test Mac kept listing `gemma` after the drive had been
+      restaged with only `qwen2.5-coder:7b`. The uv caches deliberately do
+      *not* mirror — extra wheels there are harmless, and deleting what a
+      student's uv cached locally would be gratuitous.
+
+    **Verified end to end on 2026-08-19**, including from a cold `blue01`
+    student account: `ollama list` sees the model through its symlink,
+    `cot` and `ollama` resolve, and `uv add --script ... pygame` plus
+    `uv run` complete with no network access. That last one is the whole
+    point of the arrangement and is the only test that would have caught a
+    bad uv seed.
 
     ~~**The script pins every installed app plus Terminal to all 8
     accounts' Docks.** Policy: pin everything pinnable.~~
@@ -679,3 +691,37 @@ a thread about one would open by reading the state of another.
 
     Drive is named `app_installer`. Affects `nhsengineering` only.
     — 2026-08-19
+
+45. **The shared model folder is mirrored from the drive, not merely added
+    to.** `rsync --size-only` alone made re-runs cheap but could never
+    remove anything, so `gemma4:26b`'s manifest and its 17GB blob — copied
+    over in the first install off the mixed exFAT drive — survived every
+    subsequent run and `ollama list` kept advertising it on the lab Mac.
+    The models copy now uses `--delete`, making the drive the source of
+    truth for which models exist. The uv caches deliberately do not mirror:
+    an extra wheel there is harmless, and deleting whatever a student's uv
+    cached locally would be gratuitous.
+
+    A diagnostic trap worth remembering, because it cost time twice: on a
+    lab Mac, `ollama list` answers differently depending on which account
+    asks. The 8 student accounts have `~/.ollama/models` symlinked to
+    `/Users/Shared/ollama-models`; an admin account like `labadmin` does
+    not, and shows its own private store. Checking the shared folder means
+    checking from a student account, or following the symlink by hand.
+    Affects `nhsengineering` only. — 2026-08-19
+
+46. **The `--check` mode is the only automated test the install script can
+    have, and it is worth more than it looks.** The install itself needs
+    root and real hardware, so it cannot be unit-tested. `--check`
+    validates the whole payload with no sudo and no writes, and every
+    failure it detects is one that was actually hit this session: a zip
+    made without `--keepParent`, a bare bundle on a FAT volume, a
+    `uv-python` folder whose symlinks a FAT volume silently dropped, a
+    missing `uv-python` entirely, a malformed `clitools.txt`, and
+    `arduino15` present with no accounts named. Each one looks fine and
+    fails later, which is exactly the class of problem worth a check.
+
+    The rule this session kept re-teaching: **run `--check` on your own Mac
+    before carrying the drive anywhere.** Finding a bad payload at the desk
+    costs a minute; finding it on the twentieth machine costs the
+    afternoon. Affects `nhsengineering` only. — 2026-08-19

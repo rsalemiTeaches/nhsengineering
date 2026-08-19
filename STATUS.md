@@ -162,9 +162,13 @@ run it, check it against the prompt, never open the code.
 ### What's done
 
 - **Project 01 (`p01.md`) and Project 02 (`p02.md`) are written and build
-  clean.** P01 sets up the whole term's tools once: terminal, one git repo
-  at `swdev/` for every project this term, `uv` (via `brew install uv`),
-  and CotEditor as the editor. P02 hand-types a pygame square that bounces off
+  clean.** P01 sets up the whole term's tools once: terminal, pinning the
+  three apps to the Dock, one git repo at `swdev/` for every project this
+  term, ~~`uv` (via `brew install uv`)~~ — 2026-08-19: `uv` is now
+  pre-installed by the lab script and P01 only verifies it, because
+  `brew install` cannot work in a non-admin student account
+  ([DECISIONS #41](DECISIONS.md)) — and CotEditor as the editor, opened
+  with `cot NAME` and saved with Command-S. P02 hand-types a pygame square that bounces off
   all four walls, paced with `clock.tick(60)` — deliberately rehearsing, by
   hand, the "box bounces around the screen" shape students will later ask
   an AI to build. Neither project uses AI yet. [DECISIONS #22](DECISIONS.md).
@@ -184,13 +188,16 @@ run it, check it against the prompt, never open the code.
   See `LAB-SETUP.md` for the full build-the-drive-then-run-it process. The
   same drive and script also install CotEditor, the Arduino IDE and `uv`,
   and seed the uv wheel/interpreter caches so pygame never downloads in
-  class. `.app` bundles travel as `ditto` zips because the exFAT drive
-  corrupts them if copied directly. The drive carries **one** model, staged
+  class. ~~`.app` bundles travel as `ditto` zips because the exFAT drive
+  corrupts them if copied directly.~~ — 2026-08-19: the drive is now
+  **Mac OS Extended (Journaled)**, named `app_installer`, so bundles copy
+  as themselves with `ditto`; the zip path is kept only as a FAT fallback
+  ([DECISIONS #44](DECISIONS.md)). The drive carries **one** model, staged
   by name with `tools/stage-model.sh` — `cp -R ~/.ollama/models` put 22.7GB
   on the real drive, including an 18GB orphan from an earlier `ollama rm`.
   Measured after the fix: **1m17s per machine**, ~26 minutes for all 20.
   Run `./install-lab-software.sh --check` before carrying the drive
-  anywhere. [DECISIONS #40, #41, #43](DECISIONS.md).
+  anywhere. [DECISIONS #40, #41, #43, #44](DECISIONS.md).
   Model is `qwen2.5-coder:7b`, sized for the lab Macs' 16GB Apple Silicon.
   [DECISIONS #23, #30](DECISIONS.md).
 - **Unit 02 grading is settled**: 20 points on time, 18 late, a redo scores
@@ -246,20 +253,39 @@ run it, check it against the prompt, never open the code.
   P09 and P10 are one backlog feature each. Their titles are already
   printed on the checkoff sheet by `tracker.js`, so a title change there
   means regenerating the sheet.
-- **`shared/` has an uncommitted fix and an uncommitted test**
-  ([DECISIONS #37](DECISIONS.md)) — `build-all.sh` no longer demands
-  `Class Development` on a non-deploy run. Both robotics repos get it when
-  their pins move, and per #11 that means rebuilding and eyeballing their
-  guides.
+- **`shared/`'s `build-all.sh` fix is committed and pushed on `master`**
+  ([DECISIONS #37](DECISIONS.md)) — it no longer demands `Class
+  Development` on a non-deploy run, and `test-build.js` covers both halves.
+  **`nhsrobotics` and `advrobotics` have not moved their pins yet**, and
+  per #11 doing so means rebuilding and eyeballing their guides.
 - **No Unit 02 guide has been deployed from this thread.** `Class
   Development` was not mounted, so the guides and the checkoff sheet were
   built but not copied to Drive.
 - **Tinkercad is untested against the school filter**, and it is the only
   thing either unit needs that cannot come off the drive.
   [DECISIONS #42](DECISIONS.md).
-- **`ARDUINO_ACCOUNTS` in `install-lab-software.sh` is empty.** Only one
-  class period of eight uses the Arduino IDE; the account name has not been
-  supplied, so board-package seeding is skipped until it is.
+- **`ARDUINO_ACCOUNTS` in `install-lab-software.sh` is empty, and the
+  Arduino IDE is not on the drive.** Only one class period of eight uses
+  it; the account name has not been supplied, so board-package seeding is
+  skipped until it is. Adding it is two `ditto` commands plus that name.
+- **One lab Mac is installed and verified; 19 are not.** The MacBookAir
+  passed end to end, including from a student account: `ollama list` shows
+  only `qwen2.5-coder:7b`, and `uv add --script ... pygame` plus `uv run`
+  complete with no network. At ~1m17s each, the rest is about half an hour
+  of walking around.
+- **`labadmin` on the MacBookAir was pointed at the shared model folder by
+  hand** — its own `~/.ollama/models` was replaced with a symlink so
+  `ollama list` matches what students see. Consequence: labadmin can no
+  longer pull its own models, since the shared folder is root-owned and
+  read-only. The script does *not* do this; it only touches the 8 student
+  accounts, and whether `labadmin` should be added to that list is
+  unsettled — #30's hardcoded list exists precisely to keep the script out
+  of accounts like it.
+- **That Mac's Dock needed manual repair** after the withdrawn Dock
+  automation ([DECISIONS #41](DECISIONS.md)) left stale entries and
+  question marks. Nothing in the script touches the Dock any more, but the
+  other 19 machines should be spot-checked if any of them was ever run with
+  the older script — none was.
 - **An unexplained `game.py` and a screenshot showed up untracked** in
   `swdev` during Ray's own hands-on test of the guides — not created by
   either guide, purpose unconfirmed.
