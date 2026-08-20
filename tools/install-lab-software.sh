@@ -410,17 +410,44 @@ if [[ ${#ARDUINO_ACCOUNTS[@]} -gt 0 ]] \
 fi
 
 
-# --- 6. The uv environment, machine-wide ----------------------------------
-# Without these, `uv add --script game.py pygame` reaches out to PyPI in the
-# middle of class, once per account per machine. With them, the wheels and
-# the interpreter are already on disk. UV_PYTHON_INSTALL_DIR is separate
+# --- 6. The machine-wide environment --------------------------------------
+# Two things go in here: the uv cache locations, and a git identity.
+#
+# uv: without these, `uv add --script game.py pygame` reaches out to PyPI in
+# the middle of class, once per account per machine. With them, the wheels
+# and the interpreter are already on disk. UV_PYTHON_INSTALL_DIR is separate
 # because UV_CACHE_DIR does not cover Python installs.
+#
+# git: without an identity, the first `git commit` of Project 04 stops with
+# "Please tell me who you are" and a class period goes on configuring git
+# instead of building a game. The alternative — teaching
+# `git config --global user.name` in P01 — writes one period's real name and
+# email into a ~/.gitconfig that the next seven periods can read, since the
+# eight accounts are shared by class period and not by student.
+#
+# ${USER:-$(id -un)} expands when the shell sources the file, so one
+# machine-wide line gives each account its own identity: blue01 commits as
+# blue01. The fallback covers a shell that starts without USER set.
+#
+# The address uses .invalid, a suffix reserved by RFC 2606 that can never
+# route anywhere. Nothing here is pushed — the repo lives on the machine and
+# PowerSchool is the record of completion — so a real address would only
+# invite mail to somewhere nobody reads.
+#
+# GIT_CONFIG_COUNT/KEY_0/VALUE_0 sets init.defaultBranch, which silences the
+# hint paragraph `git init` otherwise prints in P01. A printed guide cannot
+# explain output that varies, so it is pinned rather than described.
+#
+# These are exported as environment variables rather than written with
+# `git config --system` on purpose: Apple's git keeps its system config
+# inside the Command Line Tools bundle, where a CLT update can erase it.
+# The /etc block is already proven on this hardware.
 #
 # Written between markers so re-running replaces the block instead of
 # stacking up copies of it.
 
 echo ""
-echo "Setting the uv environment..."
+echo "Setting the machine-wide environment..."
 for envfile in "${ENV_FILES[@]}"; do
   touch "$envfile"
   if grep -qF "$MARK_BEGIN" "$envfile"; then
@@ -437,6 +464,13 @@ for envfile in "${ENV_FILES[@]}"; do
     # broken. Forcing `only-managed` would remove that fallback and turn one
     # bad drive into a dead class period, in exchange for nothing — the
     # shipped interpreter already wins when it is present.
+    echo 'export GIT_AUTHOR_NAME="${USER:-$(id -un)}"'
+    echo 'export GIT_AUTHOR_EMAIL="${USER:-$(id -un)}@nhs.invalid"'
+    echo 'export GIT_COMMITTER_NAME="${USER:-$(id -un)}"'
+    echo 'export GIT_COMMITTER_EMAIL="${USER:-$(id -un)}@nhs.invalid"'
+    echo 'export GIT_CONFIG_COUNT=1'
+    echo 'export GIT_CONFIG_KEY_0=init.defaultBranch'
+    echo 'export GIT_CONFIG_VALUE_0=main'
     echo "$MARK_END"
   } >> "$envfile"
   echo "  $envfile"
@@ -463,3 +497,11 @@ echo ""
 echo "Then, in a scratch folder, confirm nothing reaches the network:"
 echo "  touch t.py && uv add --script t.py pygame && uv run t.py"
 echo "It should finish in seconds. If it downloads, the uv seed is incomplete."
+echo ""
+echo "And confirm git commits without asking who the student is:"
+echo "  git init g && cd g && touch f && git add f && git commit -m t"
+echo "It should commit as this account's name. If it asks for a name and"
+echo "email, the environment block did not reach this account's shell."
+echo ""
+echo "Check from a student account, not from an admin one: an admin account"
+echo "has its own PATH, its own ~/.ollama, and possibly its own uv."

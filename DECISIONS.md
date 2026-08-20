@@ -725,3 +725,108 @@ a thread about one would open by reading the state of another.
     before carrying the drive anywhere.** Finding a bad payload at the desk
     costs a minute; finding it on the twentieth machine costs the
     afternoon. Affects `nhsengineering` only. — 2026-08-19
+
+47. **The lab drive is backed up as one opaque archive, kept beside
+    `Class Development` rather than inside it, and a second physical drive
+    is the working spare.** Google Drive rewrites the symlinks and
+    permissions inside an `.app` bundle, so syncing the drive's contents as
+    a folder would corrupt the apps exactly the way exFAT did. A single
+    file — `ditto -c -k --sequesterRsrc --keepParent`, or an `hdiutil`
+    `.dmg` — syncs byte for byte and restores intact.
+
+    It goes in `Teaching/` under the `rdsalemi@gmail.com` Drive, not in
+    `Class Development`: nothing would break there (`build-all.sh -d`
+    copies named PDFs in, it does not sweep the folder) but a 6GB archive
+    in the folder holding class documents is the wrong drawer.
+
+    Worth knowing what the backup is actually for. Nearly everything on the
+    drive is reproducible — the apps are free downloads, the model is one
+    `ollama pull`, `uv` is one `brew install`, and the script and
+    `clitools.txt` are in this repo. **The part that is not cheap to
+    reproduce is the tested pairing**: this pygame wheel against this
+    Python 3.13. Rebuilding from scratch means re-verifying that, not just
+    re-downloading. That is the thing the archive preserves.
+
+    A second USB drive was chosen over relying on the cloud alone, because
+    it is the same 6GB, it is usable immediately if the first dies, and
+    three drives turn half an hour of walking around into fifteen minutes.
+    Affects `nhsengineering` only. — 2026-08-19
+
+48. **Unit 01 is closed. It is not being worked on, and its open items are
+    not work.** The guides build, they deploy, and Ray has taught this class
+    from this content before (#17). What was listed as open — no shared
+    skeleton across E00–E09, importer-fused diagram labels, no student
+    holding a new-pipeline PDF — is polish nobody is waiting on, and #18 was
+    already withdrawn rather than acted on. A thread that opens on this repo
+    works on Unit 02 unless Ray says otherwise. Reopening Unit 01 is a
+    deliberate call, not something a thread drifts into because STATUS.md
+    still lists a gap. Affects `nhsengineering` only. — 2026-08-20
+
+49. **A student picks the model from the Ollama app's Select Model pulldown
+    every time they open it, and files attach with the + button — not a
+    paperclip.** Both were found by working the guides on the real app, and
+    both were wrong in print:
+
+    - The guides said "check that the model at the bottom of the window
+      says `qwen2.5-coder:7b`." Checking is not enough — the app does not
+      reliably come up on that model, and a printed guide (#21) cannot
+      tell a student what it will say. Selecting is an action, so it is
+      written as one, in P03 (first use), P04 and P05.
+    - **There is no paperclip button.** It is a plus sign. This corrects
+      #38, which named the paperclip in both its own text and the guides'.
+      #38's substance is unchanged — attach, do not paste; both files from
+      P05 on — only the button's name was wrong.
+
+    Also from the same hands-on pass: P04's prompt now names the file
+    (`...implements the game in the PRD.md file`) instead of trailing off
+    into "does the following," which read as though the requirements were
+    about to be typed out; and Step 4 warns that generation can take a
+    while and to let it finish before copying, because a half-written code
+    block looks finished. Affects `nhsengineering` only. — 2026-08-20
+
+50. **Students are given a git identity by the install script. They are not
+    taught to configure one.** Without it, the first `git commit` in P04
+    Step 12 stops with "Please tell me who you are," and a period meant for
+    building a game goes on configuring git — which #29 already says is not
+    what this unit teaches. Git here is a student's undo mechanism (#35),
+    not a collaboration tool.
+
+    Four exports join the uv variables in the block the script writes to
+    `/etc/zshenv`, `/etc/profile` and `/etc/bashrc` (#41):
+    `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`,
+    `GIT_COMMITTER_EMAIL`, each set to `${USER:-$(id -un)}` — **written
+    unexpanded, in single quotes.** That is the whole trick: the block is
+    machine-wide but the value resolves when each account's shell sources
+    it, so `blue01` commits as `blue01` from one line. Double-quoting them
+    would expand `$USER` at install time and stamp the installer's own
+    identity on all eight accounts, which is why `test-env-block.sh` checks
+    the quoting and not just the presence.
+
+    The address is `${USER}@nhs.invalid`. `.invalid` is reserved and can
+    never route; nothing is pushed, the repo never leaves the machine, and
+    PowerSchool is the record of completion (#36), so a real address would
+    only invite mail nobody reads.
+
+    **Rejected: teaching `git config --global` in P01.** The eight accounts
+    are shared by class period, not by student, so period 1's real name and
+    email would sit in a `~/.gitconfig` the next seven periods can read.
+    That is a privacy cost paid for attribution that buys nothing here.
+
+    **Environment variables rather than `git config --system`**, because
+    Apple's git keeps its system config inside the Command Line Tools
+    bundle, where a CLT update can erase it silently. The `/etc` block is
+    already proven on this hardware.
+
+    The same block now pins `init.defaultBranch=main` via
+    `GIT_CONFIG_COUNT`/`KEY_0`/`VALUE_0`, which silences the hint paragraph
+    `git init` prints in P01. A printed guide (#21) cannot explain output
+    that varies by git version. This does not change #35 — restoring one
+    file is still the right thing to teach, for its own reasons.
+
+    **New test: `tools/test-env-block.sh`.** #46 said `--check` was the only
+    automated test this script could have, and that was too pessimistic: the
+    install needs root and hardware, but the *content* of the environment
+    block is just shell, and what it must accomplish can be verified in a
+    scratch directory with no privileges. Confirmed to fail on a mutated
+    copy before being trusted on the real one. Affects `nhsengineering`
+    only. — 2026-08-20

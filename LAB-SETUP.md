@@ -153,10 +153,25 @@ verifies each signature, installs `bin/*` to `/usr/local/bin`, symlinks the
 in-bundle tools named in `clitools.txt`, copies the model and the uv caches
 to `/Users/Shared` (one copy per machine, not one per account — DECISIONS
 #23), symlinks all 8 accounts' `~/.ollama/models` to the shared model, seeds
-Arduino board packages for the accounts you named, and writes the two `uv`
-environment variables to `/etc/zshenv`, `/etc/profile` and `/etc/bashrc` so
-every account gets them whichever shell it uses. Safe to re-run. No need to
+Arduino board packages for the accounts you named, and writes the machine-wide
+environment block to `/etc/zshenv`, `/etc/profile` and `/etc/bashrc` so
+every account gets it whichever shell it uses. Safe to re-run. No need to
 log into any of the 8 accounts by hand.
+
+That block holds the two `uv` variables and a **git identity**. Without an
+identity, the first `git commit` in Project 04 stops with *"Please tell me who
+you are"* and the period goes on configuring git instead of building a game.
+`GIT_AUTHOR_NAME` is written as `${USER:-$(id -un)}`, unexpanded, so it
+resolves when each account's shell sources the file — `blue01` commits as
+`blue01` from one machine-wide line. The address uses `.invalid`, which can
+never route anywhere; nothing is pushed, and PowerSchool is the record of
+completion. The block also pins `init.defaultBranch=main`, which silences the
+hint paragraph `git init` would otherwise print in P01 — a printed guide
+cannot explain output that varies.
+
+Teaching `git config --global` in P01 was the alternative and is worse: the
+eight accounts are shared by class period, so period 1's real name and email
+would sit in a `~/.gitconfig` the next seven periods can read.
 
 **Budget about 1m20s per machine** — measured at 1m17s, most of it the model
 copy. That is roughly half an hour for 20 Macs, serially. If you want it
@@ -248,6 +263,36 @@ incomplete** and every student in every period will hit the network the
 first time they run a project — 160 downloads on the school network, live,
 in front of a class. That is the failure #23 was written to prevent, and it
 is the one that will not announce itself until September.
+
+Last, that git commits without stopping to ask who the student is:
+
+```bash
+cd /tmp/check && git init g && cd g && touch f && git add f && git commit -m t
+```
+
+It should commit as this account's name — `blue01`, not yours — and `git
+init` should print no hint paragraph. If it asks for a name and email, the
+environment block did not reach this account's shell.
+
+**Do all of this from a student account, never from an admin one.** An admin
+account has its own PATH, its own `~/.ollama`, and possibly its own `uv`
+installed under `~/.local/bin` that shadows the drive's copy in
+`/usr/local/bin`. Checking from there tells you about that account and
+nothing about a student's. This is the same trap as DECISIONS #45.
+
+### Testing the block without a lab Mac
+
+```bash
+tools/test-env-block.sh
+```
+
+No sudo, no drive, a second to run. It confirms the git exports are in the
+script and single-quoted — double quotes would expand `${USER}` at install
+time and give every account on the machine the installer's identity — then
+sources the extracted block in a bare environment and checks that a commit
+succeeds, the author is the account name, and `git init` makes `main`
+silently. The install itself still cannot be tested (it needs root and real
+hardware, DECISIONS #46), but the block's content can be.
 
 ## Notes
 

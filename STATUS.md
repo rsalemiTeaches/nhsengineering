@@ -23,6 +23,11 @@ reading the state of another. Robotics keeps its own set in `nhsrobotics`.
   prose is stale even though its own example commands already say `shared/`.
   The Google Docs importer is in `tools/`, vendored libraries in `third_party/`,
   the `intro2programming` notebooks as a submodule under `coursework/`.
+- **`app_installer`** — the USB drive that installs a lab Mac. Not a
+  folder to mount in a thread, but part of the project: it carries the
+  apps, the staged model, `uv`, the uv caches and
+  `install-lab-software.sh`. Formatted Mac OS Extended (Journaled).
+  `LAB-SETUP.md` is the whole procedure for building and using it.
 - **`Class Development`** — the deployed documents, and NOT home. Unit 01
   guides land in `Engineering/Projects/Unit 01—Electronics/`. Unit 02 guides
   deploy to `Unit 02—Software Engineering/`, at that folder's root — not
@@ -39,10 +44,12 @@ below about `🤖` and the build machine deciding the font.
 
 ## Current units
 
-Two units are active: Unit 01 (Electronics, importing/polishing finished
-guides) and Unit 02 (Software Engineering, being written from scratch).
+**One unit is active: Unit 02 (Software Engineering).** Unit 01 (Electronics)
+is **closed** — see [DECISIONS #48](DECISIONS.md). Its guides build and
+deploy, and the content is classroom-tested (#17). Nothing below the Unit 01
+heading is work. Skip to Unit 02.
 
-## Unit 01 — Electronics
+## Unit 01 — Electronics (CLOSED, not being worked on)
 
 **Ten guides, imported from Google Docs and building to PDF. None has been
 taught from in this form.**
@@ -94,9 +101,12 @@ builder's `topdf.js`, so Word is no more in this chain than in a guide's.
 - **The repo is an Obsidian vault.** Wikilinks on, `third_party/` excluded,
   `.obsidian/workspace.json` gitignored. Built guides are not committed.
 
-## What's open
+## What's open — nothing. Unit 01 is closed.
 
-**The import is still raw, and this is the largest thing left.** It carried the
+The items below are recorded polish, not a to-do list. Per
+[DECISIONS #48](DECISIONS.md), a thread does not pick these up.
+
+**The import is still raw.** It carried the
 words and the pictures across and nothing else. Two concrete gaps:
 
 - **No shared skeleton.** Robotics P02 has a shape every guide repeats: *Part 1:
@@ -200,6 +210,13 @@ run it, check it against the prompt, never open the code.
   anywhere. [DECISIONS #40, #41, #43, #44](DECISIONS.md).
   Model is `qwen2.5-coder:7b`, sized for the lab Macs' 16GB Apple Silicon.
   [DECISIONS #23, #30](DECISIONS.md).
+- **Students get a git identity from the install script**, not from a step in
+  P01. Four `GIT_AUTHOR`/`GIT_COMMITTER` exports join the uv variables in the
+  `/etc/zshenv` block, written as `${USER:-$(id -un)}` so each account
+  commits as itself. The block also pins `init.defaultBranch=main` to silence
+  `git init`'s hint. `tools/test-env-block.sh` verifies it with no sudo and
+  no drive. [DECISIONS #50](DECISIONS.md). **Not yet re-run on the
+  MacBookAir** — the script changed, so the drive's copy is stale.
 - **Unit 02 grading is settled**: 20 points on time, 18 late, a redo scores
   18 once it's right, an unfinished project scores a zero. Same numbers as
   Unit 01, but the printed text stands on its own — no cross-reference to
@@ -221,7 +238,13 @@ run it, check it against the prompt, never open the code.
   `PRD.md`; P05 onward attaches both `PRD.md` and `game.py` every chat, and
   types only the one new requirement. Attaching the PRD is not the same as
   asking for the whole game — it is how the AI knows what not to break.
-  [DECISIONS #38](DECISIONS.md).
+  [DECISIONS #38](DECISIONS.md). The button is a **+**, ~~a paperclip~~ —
+  2026-08-20, corrected in P04 and P05 after working the app by hand
+  ([DECISIONS #49](DECISIONS.md)).
+- **The model is selected, not checked.** P03, P04 and P05 tell the student
+  to pick `qwen2.5-coder:7b` from the Ollama app's **Select Model** pulldown
+  every time they open it; the app does not reliably come up on it.
+  [DECISIONS #49](DECISIONS.md).
 - **The long-thread lesson is taught in P04**, at Step 11 — why a chat slows
   down, how to reset it, and no rule about when. P05 relies on it.
   [DECISIONS #25, #39](DECISIONS.md).
@@ -268,6 +291,11 @@ run it, check it against the prompt, never open the code.
   Arduino IDE is not on the drive.** Only one class period of eight uses
   it; the account name has not been supplied, so board-package seeding is
   skipped until it is. Adding it is two `ditto` commands plus that name.
+- **The drive has no backup yet, and there is no second drive.** The plan
+  is settled — one opaque archive in `Teaching/` on the gmail Drive, plus a
+  cloned spare stick ([DECISIONS #47](DECISIONS.md)) — but neither exists.
+  `hdiutil` was tried and stopped at its authorization prompt; the
+  `ditto -c -k` route needs no prompt and was not run either.
 - **One lab Mac is installed and verified; 19 are not.** The MacBookAir
   passed end to end, including from a student account: `ollama list` shows
   only `qwen2.5-coder:7b`, and `uv add --script ... pygame` plus `uv run`
