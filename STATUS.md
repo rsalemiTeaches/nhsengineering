@@ -41,9 +41,21 @@ reading the state of another. Robotics keeps its own set in `nhsrobotics`.
 ## Sandbox setup
 
 No sandbox needed beyond the `shared/` submodule sync, which `start-thread`
-already runs automatically. Building a guide to PDF works in a fresh
-sandbox as long as the guide has no emoji in it — see the Unit 01 note
-below about `🤖` and the build machine deciding the font.
+already runs automatically.
+
+Building a guide to PDF works in a fresh sandbox. **Do not put emoji in
+anything that becomes a PDF** — the sandbox has no emoji font and bakes a
+placeholder box into the file, which is what happened to the robotics
+worksheet's `🤖`. Geometric characters like `☐` and `◇` are fine and are
+what the checkoff sheets use. If an unusual character is in a file, render
+the page and look at it rather than warning about it:
+
+```
+pdftoppm -png -r 80 -f 1 -l 1 FILE.pdf /tmp/x
+```
+
+then copy the PNG somewhere readable and open it. That is how the Unit 02
+sheet was confirmed before deploying on 2026-08-20.
 
 ## Current units
 
@@ -129,10 +141,11 @@ words and the pictures across and nothing else. Two concrete gaps:
 
 Grading is no longer part of this gap — see #12.
 
-**A PDF must be built on Ray's Mac.** The worksheet's 🤖 renders there and comes
-out as a placeholder box when built anywhere without an emoji font — the sandbox,
-for one. The font is chosen when the PDF is made, not when it is opened, so the
-build machine decides what a student sees.
+~~**A PDF must be built on Ray's Mac.**~~ — 2026-08-20: only true for a file
+containing emoji, and Unit 01 has none. The worksheet with the `🤖` is
+robotics'. Unit 01's own guides and its checkoff sheet build correctly
+anywhere; the `☐` and `◇` it uses are in the sandbox's fonts.
+[DECISIONS #56](DECISIONS.md).
 
 **No student has held one of the new PDFs yet.** That's about the pipeline, not
 the content: Ray has taught this class from these exact guides before, in their
@@ -169,8 +182,8 @@ the prompt and check the result, and reading or writing code is not a goal
 of this unit at any project. Verification throughout is behavioral only —
 run it, check it against the prompt, never open the code.
 [DECISIONS #29](DECISIONS.md). Guides live in `guides/unit02/`, named
-`pNN.md` (Unit 01 owns `eNN`), each with their own `course.js` and
-`deploy.txt`.
+`pNN.md` (Unit 01 owns `eNN`), with their own `course.js` and `deploy.txt`.
+**The unit is five projects and all five are written, built and deployed.**
 
 ### What's done
 
@@ -190,15 +203,18 @@ run it, check it against the prompt, never open the code.
 - **The guides are written and typeset to be readable on paper by a dyslexic
   student.** `shared/build.js` sets 12pt, 1.5-line spacing and explicit left
   alignment; all five Unit 02 guides were rewritten to short sentences with
-  the action first. Costs paper: Unit 02 went 22 sheets to 30.
+  the action first, and again for P04 and P05 when the unit was restructured.
+  Costs paper — the five now print 4, 6, 6, 8 and 6 pages.
   [DECISIONS #51](DECISIONS.md).
 - **The old Drive content for "Unit 02" does not carry over**, except
-  possibly the game roster. `Class Development/Unit 02—Software
-  Engineering/` still has the old `Software Change Request` bug-tracking
-  form (a past program-management class, not this one) and a
-  `Game Assignments.pdf` roster (14 students across Pong/Breakout/Snake/
-  Space Invaders/Frogger) that may still be reused for game assignment.
-  [DECISIONS #19](DECISIONS.md).
+  possibly the game roster. The **root-level**
+  `Class Development/Unit 02—Software Engineering/` holds the previous
+  version of this class — the `Software Change Request` bug-tracking form,
+  a `Game Assignments.pdf` roster (14 students across Pong/Breakout/Snake/
+  Space Invaders/Frogger) that may still be reused, and folders
+  `Project 00`–`Project 02`, `Archive`, `AI Instructions`, `Example Project`
+  and `GameScreens`. Nothing deploys there now.
+  [DECISIONS #19, #22](DECISIONS.md).
 - **Ollama deployment is settled, mechanism and all**: a USB thumb drive
   and one script, `tools/install-lab-software.sh`, installs the apps, the model,
   and wires up all 8 local accounts (`blue01`–`blue04`, `red01`–`red04`) on
@@ -231,8 +247,9 @@ run it, check it against the prompt, never open the code.
   another unit. [DECISIONS #26](DECISIONS.md).
 - ~~**The unit is ten projects, one class period each, and the MVP finishes at
   P07.**~~ — 2026-08-20: **the unit is five projects, and the MVP is P04.**
-  P04 and P05 take two periods each. Ray's own test killed the ten-project
-  map: one paragraph of prompt got a complete, playable Pong out of
+  Ray's own test killed the ten-project map: no period counts are printed
+  anywhere — P05 is likely three periods. One paragraph of prompt got a
+  complete, playable Pong out of
   `qwen2.5-coder:7b`, so building a known game one sprite at a time was
   solving a problem that does not exist. [DECISIONS #54](DECISIONS.md),
   reversing #32 and #33.
@@ -293,12 +310,12 @@ run it, check it against the prompt, never open the code.
   Development` on a non-deploy run, and `test-build.js` covers both halves.
   **`nhsrobotics` and `advrobotics` have not moved their pins yet**, and
   per #11 doing so means rebuilding and eyeballing their guides.
-- **Two more uncommitted `shared/` changes.** The readability typography
-  ([DECISIONS #51](DECISIONS.md)) — robotics guides will grow by a page or
-  two when their pins move — and the fix for `vault-shared`'s own red
-  GitHub Action ([DECISIONS #52](DECISIONS.md)), which had been failing
-  since #37 because `build-all.sh` demanded LibreOffice on a run that
-  converts nothing.
+- **`shared/` has two more commits on `master` from this session** — the
+  readability typography ([DECISIONS #51](DECISIONS.md)) and the fix for
+  `vault-shared`'s own red GitHub Action ([DECISIONS #52](DECISIONS.md)),
+  which had been failing since #37 because `build-all.sh` demanded
+  LibreOffice on a run that converts nothing. **Robotics guides will grow by
+  a page or two when their pins move**, because of the typography.
 - ~~**No Unit 02 guide has been deployed.**~~ — 2026-08-20: all five guides
   and the checkoff sheet are deployed to
   `Class Development/Engineering/Projects/Unit 02—Software Engineering/`.
@@ -308,6 +325,12 @@ run it, check it against the prompt, never open the code.
   `Project 02—Create the first version`, plus `Archive`, `AI Instructions`,
   `Example Project` and `GameScreens`. Whether any of it is kept is still
   open; only the game roster was ever a candidate. See #19.
+- **P04 and P05 have not been worked end to end by anyone.** Ray tested the
+  old P04 by hand and the old P05's PRD step, and both guides were rewritten
+  after that. The one-line-PRD flow in the new P04 has never been run start
+  to finish, and P05's six changes have never been done in order.
+- **`P05` is likely three periods, not two.** Ray's estimate. Nothing is
+  printed either way, so this only matters for the calendar.
 - **Tinkercad is untested against the school filter**, and it is the only
   thing either unit needs that cannot come off the drive.
   [DECISIONS #42](DECISIONS.md).
@@ -341,3 +364,12 @@ run it, check it against the prompt, never open the code.
 - **An unexplained `game.py` and a screenshot showed up untracked** in
   `swdev` during Ray's own hands-on test of the guides — not created by
   either guide, purpose unconfirmed.
+- **`labadmin` has its own `uv` at `~/.local/bin/uv`** (0.11.26) shadowing
+  the drive's copy in `/usr/local/bin`. That is Ray's personal admin
+  account and it is fine, but it means **guide steps must be verified from
+  a student account**, never from labadmin — same trap as #45. The check
+  without logging out is
+  `sudo -u blue01 -i zsh -lc '...'`.
+- **`.git/index.lock` was present in `nhsengineering` for part of the
+  session.** Delete it if commits start failing:
+  `rm ~/repos/sch_repo/nhsengineering/.git/index.lock`.

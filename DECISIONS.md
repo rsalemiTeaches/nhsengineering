@@ -1026,6 +1026,10 @@ a thread about one would open by reading the state of another.
     a game they are not building. Asteroids belongs to nobody, so the
     example teaches the shape without doing anyone's work.
 
+    **P05's six are named identically in three places** — the guide's
+    opening, its Step 1, and `tracker.js`. Same order, same words. A rubric
+    that is checked off against a sheet cannot afford a synonym.
+
     **No period counts in printed text.** P04 and P05 briefly said "two
     periods," on the sheet and in the guides. Removed: Ray's own estimate is
     that P05 runs three, and a number printed on a handout is wrong the first
@@ -1039,3 +1043,24 @@ a thread about one would open by reading the state of another.
     most. The guide points out what the example demonstrates — the theme is
     what makes the other five agree with each other. Affects
     `nhsengineering` only. — 2026-08-20
+
+56. **No emoji in anything that becomes a PDF, and an unusual character gets
+    looked at rather than caveated.** #15 recorded that the machine building
+    a PDF decides its fonts, and every thread since has repeated the warning
+    to Ray instead of resolving it. He is tired of the caveat and he is
+    right: telling him a glyph *might* be wrong is not worth reading.
+
+    Two rules replace it. Do not introduce a character that cannot be
+    verified — a plain one almost always works. And where an unusual
+    character already exists, render the page and look at it:
+    `pdftoppm -png -r 80 -f 1 -l 1 FILE.pdf /tmp/x`, then open the image.
+
+    That is how the `☐` in the Unit 02 checkoff sheet was confirmed as a real
+    box before deploying, which also answers the standing question:
+    **geometric characters like `☐` and `◇` are in the sandbox's fonts and
+    render correctly; emoji do not.** So the checkoff sheets are safe to
+    build anywhere. Only emoji ever forced a build onto Ray's Mac, and the
+    only one left is the robotics worksheet's `🤖`.
+
+    Affects `nhsengineering`, and `nhsrobotics` for that worksheet.
+    — 2026-08-20
