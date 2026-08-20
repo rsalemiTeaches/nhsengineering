@@ -830,3 +830,46 @@ a thread about one would open by reading the state of another.
     scratch directory with no privileges. Confirmed to fail on a mutated
     copy before being trusted on the real one. Affects `nhsengineering`
     only. — 2026-08-20
+
+51. **Guides are written and typeset to be readable on paper by a dyslexic
+    student. That is a requirement, not a preference.** Ray is dyslexic, and
+    what he needs to read a page is what a student needs. #21 already ruled
+    that these guides are printed handouts; this says what a printed handout
+    has to look like and read like.
+
+    **In `shared/build.js`, three settings, now named constants:**
+    `BODY_SIZE = 24` (12pt), `LINE = 360` (1.5-line spacing), and
+    `ALIGN_BODY = AlignmentType.LEFT` applied to every paragraph, bullet,
+    numbered item, lead and note. This is the standard print guidance — the
+    British Dyslexia Association's, and WCAG 1.4.8 for the same reasons.
+
+    Left alignment changes nothing today, because Word's default is already
+    left. It is set explicitly anyway: a justified guide would come from a
+    style someone adds later, and nothing would fail. Justifying means
+    stretching the spaces between words to straighten the right edge, which
+    puts white channels down the page that pull the eye off the line, and
+    removes the ragged edge a reader uses to find their place again.
+
+    **In the five Unit 02 guides, the prose was rewritten.** Short sentences,
+    one idea each. The action first in a step, with the explanation after it
+    rather than in front of it. No paragraph longer than about three
+    sentences. Not one decision, number, command or per-game requirement
+    changed — this is the same content, differently shaped.
+
+    One content change came with it: P02's aside comparing the pygame loop to
+    `loop()` in "Project 00 of Unit 01" is gone. #26 already ruled that
+    printed Unit 02 text should not send a student looking for another unit,
+    and Unit 01 is closed (#48).
+
+    **The cost is paper, and it is real.** Unit 02 went from 22 printed
+    sheets to 30 across the five guides — P04 alone went 6 to 8. Unit 01
+    grew the same way on rebuild, though nothing there was rewritten. That
+    is the price of 12pt and 1.5 spacing, and it is worth paying.
+
+    **`shared/test-build.js` pins all three** — 12pt runs, `w:line="360"`,
+    an explicit `w:jc w:val="left"`, and nothing on the page justified.
+    Confirmed to fail on a mutated copy first. This is a `shared/` change,
+    so per #11 **`nhsrobotics` and `advrobotics` get it when their pins
+    move, and moving a pin means rebuilding and eyeballing their guides** —
+    their page counts will grow too. Affects `nhsengineering` now, both
+    robotics repos on their next pin bump. — 2026-08-20

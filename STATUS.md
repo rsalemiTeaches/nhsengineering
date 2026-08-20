@@ -184,6 +184,11 @@ run it, check it against the prompt, never open the code.
   an AI to build. Neither project uses AI yet. [DECISIONS #22](DECISIONS.md).
 - **Students work from printed guides, not a screen.**
   [DECISIONS #21](DECISIONS.md).
+- **The guides are written and typeset to be readable on paper by a dyslexic
+  student.** `shared/build.js` sets 12pt, 1.5-line spacing and explicit left
+  alignment; all five Unit 02 guides were rewritten to short sentences with
+  the action first. Costs paper: Unit 02 went 22 sheets to 30.
+  [DECISIONS #51](DECISIONS.md).
 - **The old Drive content for "Unit 02" does not carry over**, except
   possibly the game roster. `Class Development/Unit 02—Software
   Engineering/` still has the old `Software Change Request` bug-tracking
@@ -281,6 +286,9 @@ run it, check it against the prompt, never open the code.
   Development` on a non-deploy run, and `test-build.js` covers both halves.
   **`nhsrobotics` and `advrobotics` have not moved their pins yet**, and
   per #11 doing so means rebuilding and eyeballing their guides.
+- **The readability typography is a second uncommitted `shared/` change**
+  ([DECISIONS #51](DECISIONS.md)). Robotics guides will grow by a page or
+  two when their pins move.
 - **No Unit 02 guide has been deployed from this thread.** `Class
   Development` was not mounted, so the guides and the checkoff sheet were
   built but not copied to Drive.
