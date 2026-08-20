@@ -54,6 +54,12 @@ const COL = [1080, 5440, 1720, 1840];
 
 // The fourth field marks the project that completes the MVP, which gets a note
 // in the sheet rather than a column of its own.
+//
+// A fifth field, `parts`, turns one project into several checked lines instead
+// of one. P01 through P04 are done or not done — the game runs, or it does not.
+// P05 is not: "make it your own" is six separate things, and a student who
+// recolors the background and stops has done one of them. Each gets its own
+// box so neither of us can call it finished by feel.
 const projects = [
   ["01", "Set Up Your Development Environment",
    "Get the terminal, git, uv, and the editor working, and run your first program."],
@@ -61,20 +67,16 @@ const projects = [
    "Hand-type a pygame program where a square bounces off all four walls."],
   ["03", "Ask an AI to Build It",
    "Give Ollama a prompt and let it write a bouncing circle for you."],
-  ["04", "Your Game, and a Sprite That Moves",
-   "Write your first PRD and get your game's sprite moving with the keyboard."],
-  ["05", "The Thing That Makes It Your Game",
-   "Add the element your game is built around."],
-  ["06", "Keeping Score",
-   "Put a score on the screen and make it change when it should."],
-  ["07", "Winning, Losing, and Starting Over",
-   "Add a way to lose, a way to win, and a way to play again.", "mvp"],
-  ["08", "Make It Yours",
-   "Reskin the game: new colors, new shapes, new look. Same rules underneath."],
-  ["09", "First Feature From Your Backlog",
-   "Pick one feature off your list and add it, by itself."],
-  ["10", "Second Feature From Your Backlog",
-   "Pick one more and add it the same way."],
+  ["04", "Build Your Base Game",
+   "Write a PRD, get your assigned game running, and demonstrate it.", "mvp"],
+  ["05", "Make Your Own Version",
+   "One change at a time, PRD first. All six have to be done.", null,
+   ["A new name",
+    "A theme — what your game is about now",
+    "A color scheme",
+    "A new look for your sprite",
+    "A new look for the other sprites",
+    "A rule the base game did not have"]],
 ];
 
 const HAIR = {style: BorderStyle.SINGLE, size: 4, color: "808080"};
@@ -139,18 +141,33 @@ rows.push(new TableRow({
   ],
 }));
 
-for (const [num, title, what, kind] of projects) {
+for (const [num, title, what, kind, parts] of projects) {
   const desc = [t(title, {bold: true}), t(what, {size: 19, color: "404040"})];
   if (kind === "mvp") {
     desc.push(t("Your game is now playable start to finish. This is your MVP.",
                 {size: 19, italics: true, color: "404040"}));
   }
+
+  // A project with no parts is one row and one box. A project with parts keeps
+  // its own row for the number and the due date, then gives each part a row of
+  // its own -- so the Done column has one box per thing, not one box for six.
   rows.push(new TableRow({children: [
     cell([t(num, {bold: true, size: 26, align: AlignmentType.CENTER})], COL[0]),
     cell(desc, COL[1]),
     dueCell(),
-    cell([box()], COL[3]),
+    parts ? cell([t("", {size: 12})], COL[3]) : cell([box()], COL[3]),
   ]}));
+
+  if (parts) {
+    for (const part of parts) {
+      rows.push(new TableRow({children: [
+        cell([t("", {size: 12})], COL[0]),
+        cell([t("     " + part, {size: 20})], COL[1]),
+        cell([t("", {size: 12})], COL[2]),
+        cell([box()], COL[3]),
+      ]}));
+    }
+  }
 }
 
 const nameLine = (label, width) => new TableCell({
@@ -177,8 +194,9 @@ const doc = new Document({
         border: {bottom: {style: BorderStyle.SINGLE, size: 6, color: "000000"}},
         children: [new TextRun({
           text: "Write the due date for each project in the Due column. Projects 01 through 03 are the " +
-                "same for everyone. From Project 04 on, you are building the game you were assigned, " +
-                "one piece at a time. Show each one working to get it checked off.",
+                "same for everyone. Project 04 is the game you were assigned, working. Project 05 is " +
+                "your own version of it, and all six lines have to be checked. Show each one working " +
+                "to get it checked off.",
           size: 21, color: "404040"})],
       }),
       new Table({

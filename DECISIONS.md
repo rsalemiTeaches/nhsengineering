@@ -262,9 +262,15 @@ a thread about one would open by reading the state of another.
     write a tighter PRD requirement and judge the AI's version more
     precisely later. Guides are `p01.md`/`p02.md` in `guides/unit02/` —
     Unit 02 uses the `p` prefix (matching "Project NN"), not `e`, which
-    Unit 01 owns — each with its own `course.js` and `deploy.txt`. Unit 02
-    deploys to `Class Development/Unit 02—Software Engineering/`, at that
-    folder's root, unlike Unit 01's nested `Engineering/Projects/` path.
+    Unit 01 owns — each with its own `course.js` and `deploy.txt`.
+    ~~Unit 02 deploys to `Class Development/Unit 02—Software Engineering/`,
+    at that folder's root, unlike Unit 01's nested `Engineering/Projects/`
+    path.~~ — 2026-08-20: **Unit 02 deploys to
+    `Engineering/Projects/Unit 02—Software Engineering/`, beside Unit 01.**
+    Both units are Engineering, so both belong under it. The root folder of
+    the same name still holds the previous version of this class (#19), so
+    deploying there put two versions of the unit side by side for a student
+    to pick between.
     Affects `nhsengineering` only. — 2026-08-19
 
 23. **Ollama is pre-installed on all 20 lab Macs ahead of class — not thumb
@@ -930,3 +936,106 @@ a thread about one would open by reading the state of another.
     reading the code to work out which part went wrong. The template is
     what holds that line, so it has to state the scope rather than imply
     it. Affects `nhsengineering` only. — 2026-08-20
+
+54. **Unit 02 is five projects, not ten. P04 builds the base game from a
+    one-line PRD and P05 turns it into the student's own version. Both take
+    two periods.** This reverses #32's ten-project map and #33's ban on a
+    whole-MVP prompt, and it is Ray's own hardware test that killed them.
+
+    He typed one paragraph — "Write me a simple pong game. Two paddles, one
+    controlled by the human with the arrow keys. Score on top. 600 pixels
+    wide 400 pixels tall use pygame" — and `qwen2.5-coder:7b` wrote a
+    complete, playable Pong. Not a fragment. Paddles, ball, collision,
+    scoring, an opponent that tracks the ball.
+
+    So building a well-understood game one sprite at a time was solving a
+    problem that does not exist. #33's argument was that a whole-game prompt
+    gives a student no way to tell which sentence caused a wrong result. What
+    actually went wrong in the test was `UnboundLocalError` — a crash, fixed
+    by the paste-the-error loop, which is the same loop at any size. Increment
+    size never entered into it.
+
+    **The new shape:**
+
+    - **P01–P03 unchanged.**
+    - **P04, two periods** — the PRD starts as one line: "This is Pong."
+      Prompt, crash loop until it runs, then *play it* and write down what is
+      wrong, add a PRD section for each, prompt again. Ends with a demo to
+      Ray. This is the MVP.
+    - **P05, two periods** — new name, new look, new rules. One change at a
+      time, PRD updated first each time, commit after each one that works.
+
+    **The one-line PRD is the pedagogy, not a shortcut.** "This is Pong" gets
+    a working game because the model has read thousands of them. What it
+    cannot know is *which* Pong. The student discovers that by playing: the
+    score climbs forever, the computer paddle moves 5 pixels a frame against
+    a 3-pixel ball and cannot be beaten, the window is whatever size it felt
+    like. Every one of those is a decision they now have to write down. A spec
+    is what you write when the default is not what you want, and they meet
+    that fact by hitting it rather than being told.
+
+    Both of those defects were in Ray's actual output and neither was
+    specified. That is the lesson, already generated.
+
+    **Rejected: a seven-section PRD template.** Drafted and thrown out. With
+    "This is Pong" at the top, a section reading "your sprite is a paddle" is
+    telling the model something it already knows. After the base-game line,
+    the only thing worth writing is what the base game leaves open — sizes,
+    speeds, colors, keys, what ends it. If you would get it anyway from the
+    genre name, it does not go in the PRD.
+
+    **The word "mechanic" is gone**, undefined jargon. So is the search for
+    one noun covering everything a game adds: a sprite is anything that moves
+    against the background, which makes Breakout's bricks not sprites. Name
+    the thing instead.
+
+    **Realistic scope: the term reaches P05.** That is why nothing past it is
+    written and why `tracker.js` prints five rows, marking P04 as the MVP and
+    both P04 and P05 as two periods. #36's "the sheet doubles as the map of
+    the unit" still holds — the map is just five projects long now.
+
+    Affects `nhsengineering` only. — 2026-08-20
+
+55. **P05 has a six-line rubric on the checkoff sheet. P01 through P04 keep
+    one box each.** The first four projects are done or not done — the game
+    runs in front of Ray, or it does not. P05 is not that kind of task. "Make
+    it your own" is a judgement call, and a student who recolors the
+    background and stops has done something, which is exactly the case a
+    single box cannot express.
+
+    So P05 gets six boxes, one per required change: a new name, a theme, a
+    color scheme, a new look for the student's sprite, a new look for the
+    other sprites, and a rule the base game did not have. All six, or the
+    project comes back — which is #26's redo rule, now with something
+    concrete to check it against.
+
+    The theme is on the list for a reason that is not decoration: it is what
+    makes the other five choices cohere. Six unrelated changes are noise; six
+    changes in service of "this is a sport now" is a design.
+
+    `tracker.js` grew a fifth field, `parts`. A project with parts keeps its
+    own row for the number and the due date, then gives each part a row and a
+    box of its own. Nothing else in the sheet changed. The same six are
+    printed in P05's Step 1, in the same order and the same words, so the
+    guide and the sheet cannot drift.
+
+    **P05's worked example is Virus Hunter, built on Asteroids — a game
+    nobody is assigned.** It was Pickleball on Pong first, which was wrong:
+    an example built on one of the five assigned games hands that game's
+    students their answer and leaves the other four with an example about
+    a game they are not building. Asteroids belongs to nobody, so the
+    example teaches the shape without doing anyone's work.
+
+    **No period counts in printed text.** P04 and P05 briefly said "two
+    periods," on the sheet and in the guides. Removed: Ray's own estimate is
+    that P05 runs three, and a number printed on a handout is wrong the first
+    time a class runs long. The Due column already governs, and the count is
+    scheduling information a student does not need.
+
+    Virus Hunter is Asteroids with the six decided on purpose: a hypodermic
+    needle for the ship, green viruses for the rocks, yellow antibodies for
+    the bullets, a pale blue microscope-slide background, and big viruses
+    that split into medium then small, with the small ones fastest and worth
+    most. The guide points out what the example demonstrates — the theme is
+    what makes the other five agree with each other. Affects
+    `nhsengineering` only. — 2026-08-20

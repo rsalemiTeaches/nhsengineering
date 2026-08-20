@@ -28,12 +28,15 @@ reading the state of another. Robotics keeps its own set in `nhsrobotics`.
   apps, the staged model, `uv`, the uv caches and
   `install-lab-software.sh`. Formatted Mac OS Extended (Journaled).
   `LAB-SETUP.md` is the whole procedure for building and using it.
-- **`Class Development`** — the deployed documents, and NOT home. Unit 01
-  guides land in `Engineering/Projects/Unit 01—Electronics/`. Unit 02 guides
-  deploy to `Unit 02—Software Engineering/`, at that folder's root — not
-  nested under `Engineering/`, unlike Unit 01. The original Unit 01 Google
-  Docs were moved to `Engineering/Unit 01 Google Doocs/` — the folder name has
-  a typo.
+- **`Class Development`** — the deployed documents, and NOT home. Both units
+  deploy under `Engineering/Projects/` — Unit 01 to `Unit 01—Electronics/`
+  and Unit 02 to `Unit 02—Software Engineering/`. ~~Unit 02 deploys to that
+  folder's root, not nested under `Engineering/`.~~ — 2026-08-20, corrected;
+  see [DECISIONS #22](DECISIONS.md). A **root-level**
+  `Unit 02—Software Engineering/` also exists and holds the *previous*
+  version of this class — nothing is deployed there. The original Unit 01
+  Google Docs were moved to `Engineering/Unit 01 Google Doocs/` — the folder
+  name has a typo.
 
 ## Sandbox setup
 
@@ -226,43 +229,48 @@ run it, check it against the prompt, never open the code.
   18 once it's right, an unfinished project scores a zero. Same numbers as
   Unit 01, but the printed text stands on its own — no cross-reference to
   another unit. [DECISIONS #26](DECISIONS.md).
-- **The unit is ten projects, one class period each, and the MVP finishes at
-  P07** — not a separate MVP project. P01–P03 are the same for everyone;
-  P04 onward each student builds their own assigned game one piece at a time.
-  [DECISIONS #32](DECISIONS.md).
-- **Projects 04 and 05 are written and build clean.** P04 is the first PRD a
-  student writes themselves and gets their game's player moving with the
-  keyboard; P05 adds the one mechanic that makes it their game, and is the
-  first time they hand Ollama existing code and ask for one addition. Both
-  carry a per-game section — Pong, Breakout, Snake, Space Invaders, Frogger —
-  so one guide serves all five without going vague. P05 introduces the thing
-  P06 onward depends on: re-checking the *old* requirements after every
-  addition, since an AI rewriting a program breaks working things silently.
-  [DECISIONS #32, #33, #34, #35](DECISIONS.md).
-- **Students attach files to Ollama, never paste them.** P04 attaches
-  `PRD.md`; P05 onward attaches both `PRD.md` and `game.py` every chat, and
-  types only the one new requirement. Attaching the PRD is not the same as
-  asking for the whole game — it is how the AI knows what not to break.
-  [DECISIONS #38](DECISIONS.md). The button is a **+**, ~~a paperclip~~ —
-  2026-08-20, corrected in P04 and P05 after working the app by hand
-  ([DECISIONS #49](DECISIONS.md)).
+- ~~**The unit is ten projects, one class period each, and the MVP finishes at
+  P07.**~~ — 2026-08-20: **the unit is five projects, and the MVP is P04.**
+  P04 and P05 take two periods each. Ray's own test killed the ten-project
+  map: one paragraph of prompt got a complete, playable Pong out of
+  `qwen2.5-coder:7b`, so building a known game one sprite at a time was
+  solving a problem that does not exist. [DECISIONS #54](DECISIONS.md),
+  reversing #32 and #33.
+- **Projects 04 and 05 are rewritten and build clean.** P04 starts the PRD as
+  one line — "This is Pong." — prompts, works the crash loop, then has the
+  student *play it* and write down what is wrong. Each of those becomes a PRD
+  section, then they prompt again. Ends with a demo to Ray. P05 turns the
+  base game into the student's own version: new name, new look, new rules,
+  one change at a time with the PRD updated first. Both end with a commit and
+  a tag. [DECISIONS #34, #35, #54](DECISIONS.md).
+- **Students attach files to Ollama, never paste them.** P04's first prompt
+  attaches `PRD.md` alone, because there is no code yet; every prompt after
+  that attaches both `PRD.md` and `game.py`. The button is a **+**,
+  ~~a paperclip~~ — 2026-08-20, corrected after working the app by hand.
+  [DECISIONS #38, #49](DECISIONS.md).
 - **The model is selected, not checked.** P03, P04 and P05 tell the student
   to pick `qwen2.5-coder:7b` from the Ollama app's **Select Model** pulldown
   every time they open it; the app does not reliably come up on it.
   [DECISIONS #49](DECISIONS.md).
-- **The long-thread lesson is taught in P04**, at Step 11 — why a chat slows
-  down, how to reset it, and no rule about when. P05 relies on it.
+- **The long-thread lesson is taught in P04** — why a chat slows down, how to
+  reset it, and no rule about when. P05 relies on it.
   [DECISIONS #25, #39](DECISIONS.md).
-- **The MVP is built one requirement at a time**, not as one whole-game
-  prompt. [DECISIONS #33](DECISIONS.md).
+- ~~**The MVP is built one requirement at a time**, not as one whole-game
+  prompt.~~ — 2026-08-20: reversed. The base game comes from a one-line PRD;
+  one-change-at-a-time now applies to *improving* it in P05, not to building
+  it. [DECISIONS #54](DECISIONS.md), reversing #33.
 - **All work from P04 on lives in one folder, `swdev/game/`**, with one
   `game.py` and one `PRD.md`. The PRD is updated before the code, every
   project. Each project ends with a commit and a `pNN` git tag; recovery is
   `git checkout pNN -- game/game.py`. [DECISIONS #34, #35](DECISIONS.md).
 - **The Unit 02 checkoff sheet is generated** by `guides/unit02/tracker.js`,
-  one Done column instead of Unit 01's Sim/Real pair, listing all ten
-  projects. PowerSchool is the official record of completion.
-  [DECISIONS #36](DECISIONS.md).
+  one Done column instead of Unit 01's Sim/Real pair. It now lists five
+  projects and marks P04 as the MVP. **P05 carries a six-line rubric** — name,
+  theme, colors, your sprite, other sprites, one new rule — with a box per
+  line; P01–P04 keep one box each. No period counts are printed anywhere:
+  P05 is likely three periods, not two, and the Due column governs.
+  PowerSchool is the official record of completion.
+  [DECISIONS #36, #54, #55](DECISIONS.md).
 - **Project 03 (`p03.md`) is written and builds clean.** Introduces Ollama:
   a teacher-given prompt (students write their own starting P04) asks for a
   bouncing circle — deliberately different window size, radius, and
@@ -276,11 +284,10 @@ run it, check it against the prompt, never open the code.
 
 ### What's open
 
-- **Projects 06 through 10 not written.** P06 puts a score on screen, P07
-  adds win/lose/restart and completes the MVP, P08 is the visual reskin,
-  P09 and P10 are one backlog feature each. Their titles are already
-  printed on the checkoff sheet by `tracker.js`, so a title change there
-  means regenerating the sheet.
+- **Nothing past P05 is written, deliberately.** The term realistically
+  reaches P05. If a class runs ahead, more projects are backlog features
+  built with P05's loop, and adding one means a new row in `tracker.js` and
+  regenerating the sheet. [DECISIONS #54](DECISIONS.md).
 - **`shared/`'s `build-all.sh` fix is committed and pushed on `master`**
   ([DECISIONS #37](DECISIONS.md)) — it no longer demands `Class
   Development` on a non-deploy run, and `test-build.js` covers both halves.
@@ -292,9 +299,15 @@ run it, check it against the prompt, never open the code.
   GitHub Action ([DECISIONS #52](DECISIONS.md)), which had been failing
   since #37 because `build-all.sh` demanded LibreOffice on a run that
   converts nothing.
-- **No Unit 02 guide has been deployed from this thread.** `Class
-  Development` was not mounted, so the guides and the checkoff sheet were
-  built but not copied to Drive.
+- ~~**No Unit 02 guide has been deployed.**~~ — 2026-08-20: all five guides
+  and the checkoff sheet are deployed to
+  `Class Development/Engineering/Projects/Unit 02—Software Engineering/`.
+  **The previous version of this class is untouched** in the root-level
+  `Unit 02—Software Engineering/` folder — `Project 00: Getting Started`,
+  `Project 01: Create the Product Requirements Document`,
+  `Project 02—Create the first version`, plus `Archive`, `AI Instructions`,
+  `Example Project` and `GameScreens`. Whether any of it is kept is still
+  open; only the game roster was ever a candidate. See #19.
 - **Tinkercad is untested against the school filter**, and it is the only
   thing either unit needs that cannot come off the drive.
   [DECISIONS #42](DECISIONS.md).
