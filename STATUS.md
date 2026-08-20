@@ -286,9 +286,12 @@ run it, check it against the prompt, never open the code.
   Development` on a non-deploy run, and `test-build.js` covers both halves.
   **`nhsrobotics` and `advrobotics` have not moved their pins yet**, and
   per #11 doing so means rebuilding and eyeballing their guides.
-- **The readability typography is a second uncommitted `shared/` change**
-  ([DECISIONS #51](DECISIONS.md)). Robotics guides will grow by a page or
-  two when their pins move.
+- **Two more uncommitted `shared/` changes.** The readability typography
+  ([DECISIONS #51](DECISIONS.md)) — robotics guides will grow by a page or
+  two when their pins move — and the fix for `vault-shared`'s own red
+  GitHub Action ([DECISIONS #52](DECISIONS.md)), which had been failing
+  since #37 because `build-all.sh` demanded LibreOffice on a run that
+  converts nothing.
 - **No Unit 02 guide has been deployed from this thread.** `Class
   Development` was not mounted, so the guides and the checkoff sheet were
   built but not copied to Drive.

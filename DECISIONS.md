@@ -873,3 +873,60 @@ a thread about one would open by reading the state of another.
     move, and moving a pin means rebuilding and eyeballing their guides** —
     their page counts will grow too. Affects `nhsengineering` now, both
     robotics repos on their next pin bump. — 2026-08-20
+
+52. **`build-all.sh` checks for LibreOffice when it has something to convert,
+    not at startup.** `vault-shared`'s own GitHub Action has been failing
+    since #37 added the test that runs `build-all.sh`. The runner has node
+    and no LibreOffice, and the script checked `node`, `soffice` and
+    `pdftoppm` before it looked at whether any guide was stale — so a run
+    that converts nothing still exited 1.
+
+    This is #37's bug in a different costume. That entry ruled that a plain
+    build must not demand `Class Development`, because building and deploying
+    are separate jobs and only one needs the folder. The same is true of
+    LibreOffice: a run where every PDF is current does no conversion, so
+    requiring the converter fails a job that was never going to use it.
+    #37's own test comment said as much — "the run reports up to date and
+    never reaches LibreOffice" — and was wrong about the code.
+
+    The check is now `require_tools`, called at the top of the stale branch
+    for a guide and before an extra's recipe runs. It is checked once per
+    run, not once per guide, so a long build cannot print the same complaint
+    ten times. **Deferring is not skipping**: a run that must convert still
+    exits 1 and still names what is missing.
+
+    `test-build.js` covers both halves, and the second half is the one worth
+    having: it builds a `PATH` with node and no LibreOffice — the runner's
+    shape — makes the guide stale, and asserts the script still refuses and
+    still names `soffice`. Both halves pass with LibreOffice present and
+    absent.
+
+    Worth recording that this was not caused by the typography change in
+    #51. Checked by running the previous commit's tests against a PATH
+    without LibreOffice: they fail the same way. CI has been red since #37
+    and nobody had looked. This is a `shared/` change, so it reaches
+    `nhsrobotics` and `advrobotics` when their pins move — see #11.
+    — 2026-08-20
+
+53. **P04's PRD template says what is out of scope, and its last section is
+    "The player at the edges," not "The edges."** Ray worked P04 himself and
+    wrote a Pong PRD whose edge section read "when the ball goes off the left
+    or right edge the opposite player gets a point" — a ball and a score, at
+    the project that adds neither.
+
+    That is not a misreading. For Pong, "the edges" plainly means scoring.
+    The template asked a question about the whole game and the guide never
+    said the PRD covers only today's piece.
+
+    Two changes. The template now opens with what is not in it yet — "No
+    ball. No score. No enemies. Those get added later, in the projects that
+    add them" — and the section is renamed and its prompt made explicit
+    about the player.
+
+    This matters more than a wording nit because of #33. The MVP is built
+    one requirement at a time precisely so a wrong result is traceable to
+    one ask. A student whose first PRD describes the finished game hands
+    Ollama the whole thing at P04, gets a whole game back, and #29 forbids
+    reading the code to work out which part went wrong. The template is
+    what holds that line, so it has to state the scope rather than imply
+    it. Affects `nhsengineering` only. — 2026-08-20
